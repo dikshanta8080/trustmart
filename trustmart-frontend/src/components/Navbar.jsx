@@ -10,19 +10,23 @@ const pageTitles = {
   "/admin/categories": "Category Management",
 };
 
+
+const notifications = [];
+
 const Navbar = () => {
   const location = useLocation();
   const title = pageTitles[location.pathname] || "Admin Panel";
+  const hasNotifications = notifications.length > 0;
 
   return (
     <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0">
-      
+
       {/* Page title */}
       <h2 className="text-sm font-medium text-gray-900">{title}</h2>
 
       {/* Right side */}
       <div className="flex items-center gap-4">
-        
+
         {/* Search bar */}
         <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1.5">
           <Search size={14} className="text-gray-400" />
@@ -33,12 +37,14 @@ const Navbar = () => {
           />
         </div>
 
-        {/* Notification bell */}
+        {/* Notification bell — badge only when notifications exist */}
         <div className="relative cursor-pointer">
           <Bell size={19} className="text-gray-500" />
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] rounded-full w-4 h-4 flex items-center justify-center">
-            3
-          </span>
+          {hasNotifications && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] rounded-full w-4 h-4 flex items-center justify-center">
+              {notifications.length}
+            </span>
+          )}
         </div>
 
         {/* Admin avatar */}
