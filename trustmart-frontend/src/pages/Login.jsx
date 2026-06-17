@@ -7,10 +7,11 @@ export default function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false); // ADD THIS
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    console.log({ action: state, fullName, email, password });
+    console.log({ action: state, fullName, email, password, rememberMe }); // UPDATE THIS
     alert(state === "Sign Up" ? "Account created!" : "Login successful!");
   };
 
@@ -89,6 +90,21 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
+
+          {/* Remember Me - Only for Login */}
+          {state !== "Sign Up" && (
+            <div className="flex items-center">
+              <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                Remember me
+              </label>
+            </div>
+          )}
 
           {/* Submit Button */}
           <button
