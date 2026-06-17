@@ -1,12 +1,17 @@
-import { Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
+// src/App.jsx
 
-function App() {
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import AdminRoutes from "./routes/AdminRoutes";
+
+const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/*" element={<AdminRoutes />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
