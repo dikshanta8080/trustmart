@@ -22,3 +22,11 @@ export const reports = [
   { id: 1079, type: "Spam", reported: "User: spam_user99", reporter: "Nikhil J.", priority: "low", status: "resolved" },
   { id: 1078, type: "Fake seller", reported: "User: seller123", reporter: "System", priority: "high", status: "escalated" },
 ];
+
+export const categories = [
+  { id: 1, name: "Electronics", listings: 3062, subcategories: 12, status: "active" },
+  { id: 2, name: "Vehicles", listings: 1923, subcategories: 8, status: "active" },
+  { id: 3, name: "Furniture", listings: 1574, subcategories: 6, status: "active" },
+  { id: 4, name: "Phones", listings: 1311, subcategories: 5, status: "active" },
+  { id: 5, name: "Clothing", listings: 542, subcategories: 4, status: "limited" },
+];
