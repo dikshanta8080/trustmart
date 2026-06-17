@@ -97,9 +97,9 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-3 shadow-lg shadow-blue-600/30">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9.5L12 3l9 6.5M21 9.5V20a2 2 0 01-2 2H5a2 2 0 01-2-2V9.5M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6" />
-            </svg>
+            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-3">
+  <span className="text-xl text-white font-bold">TM</span>
+</div>
           </div>
           <h2 className="font-bold text-3xl text-gray-800">
             <span className="font-light">Trust</span>
@@ -243,10 +243,9 @@ export default function LoginPage() {
           </button>
         </p>
 
-        {/* Footer */}
-        <p className="text-center text-gray-400 text-xs mt-4">
-          © 2026 TrustMart. All rights reserved.
-        </p>
+   <p className="text-center text-gray-400 text-xs mt-4">
+    © 2026 TrustMart. All rights reserved.
+  </p>
       </div>
     </div>
   );
