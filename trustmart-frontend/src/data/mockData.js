@@ -14,3 +14,11 @@ export const listings = [
   { id: 4, title: "Sofa Set 5 Seater", seller: "Sunita G.", category: "Furniture", price: 22000, condition: "Fair", location: "Pokhara", submitted: "1d ago", status: "rejected" },
   { id: 5, title: "Samsung 55\" TV", seller: "Kavita R.", category: "Electronics", price: 48000, condition: "Good", location: "Kathmandu", submitted: "3h ago", status: "pending" },
 ];
+
+export const reports = [
+  { id: 1082, type: "Scam / fraud", reported: "Listing: iPhone 14 Pro", reporter: "Priya S.", priority: "high", status: "open" },
+  { id: 1081, type: "Fake listing", reported: "User: amit.m", reporter: "Rajesh K.", priority: "high", status: "open" },
+  { id: 1080, type: "Inappropriate content", reported: "Listing: Sofa Set", reporter: "Sunita G.", priority: "medium", status: "in_review" },
+  { id: 1079, type: "Spam", reported: "User: spam_user99", reporter: "Nikhil J.", priority: "low", status: "resolved" },
+  { id: 1078, type: "Fake seller", reported: "User: seller123", reporter: "System", priority: "high", status: "escalated" },
+];
