@@ -1,8 +1,11 @@
+import { Routes, Route } from "react-router-dom";
+
 function App() {
   return (
-    <BrowserRouter>
-      <h1> Hello world</h1>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<h1>Home</h1>} />
+    </Routes>
   );
 }
+
 export default App;
