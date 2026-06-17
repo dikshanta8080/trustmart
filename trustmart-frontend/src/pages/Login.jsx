@@ -8,6 +8,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    console.log({ action: state, fullName, email, password });
+    alert(state === "Sign Up" ? "Account created!" : "Login successful!");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
@@ -28,7 +34,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={onSubmitHandler} className="space-y-4">
           {/* Full Name - Only for Sign Up */}
           {state === "Sign Up" && (
             <div>
@@ -83,7 +89,28 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all"
+          >
+            {state}
+          </button>
         </form>
+
+        {/* Toggle Login / Signup */}
+        <p className="text-sm text-center mt-6 text-gray-600">
+          {state === "Sign Up"
+            ? "Already have an account? "
+            : "Don't have an account? "}
+          <button
+            onClick={() => setState(state === "Sign Up" ? "Log In" : "Sign Up")}
+            className="text-blue-600 font-semibold hover:underline"
+          >
+            {state === "Sign Up" ? "Login" : "Signup"}
+          </button>
+        </p>
 
       </div>
     </div>
