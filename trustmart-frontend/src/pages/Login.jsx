@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 
 export default function LoginPage() {
@@ -7,41 +7,87 @@ export default function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState(""); // ADD THIS
 
-  const onSubmitHandler = (e) => {
+  // Load remembered email on mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-    setError(""); // ADD THIS
-    
-    // ADD VALIDATION
+    setError("");
+    setLoading(true);
+
+    // Validation
     if (state === "Sign Up" && !fullName.trim()) {
       setError("Please enter your full name");
+      setLoading(false);
       return;
     }
 
     if (!email.trim()) {
       setError("Please enter your email");
+      setLoading(false);
       return;
     }
 
     if (!password.trim()) {
       setError("Please enter your password");
+      setLoading(false);
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address");
+      setLoading(false);
       return;
     }
 
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
+      setLoading(false);
       return;
     }
-    
-    console.log({ action: state, fullName, email, password, rememberMe });
-    alert(state === "Sign Up" ? "Account created!" : "Login successful!");
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      
+      console.log({ 
+        action: state, 
+        fullName: state === "Sign Up" ? fullName : undefined, 
+        email, 
+        password,
+        rememberMe 
+      });
+      
+      // Store remember me in localStorage
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+      
+      alert(state === "Sign Up" ? "Account created successfully!" : "Login successful!");
+      
+      // Reset form
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      setRememberMe(false);
+      
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -64,17 +110,16 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Error Message - ADD THIS */}
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-2.5 rounded-lg mb-4 flex items-center gap-2 text-sm">
-            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            {error}
-          </div>
-        )}
+  <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-2.5 rounded-lg mb-4 text-sm">
+    {error}
+  </div>
+)}
+
+        
 
         <form onSubmit={onSubmitHandler} className="space-y-4">
+          
           {/* Full Name - Only for Sign Up */}
           {state === "Sign Up" && (
             <div>
@@ -98,7 +143,7 @@ export default function LoginPage() {
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Email
+              Email Address
             </label>
             <input
               type="email"
@@ -130,12 +175,13 @@ export default function LoginPage() {
                 className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12"
                 required
               />
-              <span
+              <button
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-4 flex items-center cursor-pointer text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? <FaEye /> : <FaRegEyeSlash />}
-              </span>
+              </button>
             </div>
           </div>
 
@@ -151,22 +197,32 @@ export default function LoginPage() {
                 />
                 Remember me
               </label>
-              <label
+              <button
+                type="button"
                 className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
                 onClick={() => alert("Password reset link sent to your email!")}
               >
                 Forgot password?
-              </label>
+              </button>
             </div>
           )}
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all"
-          >
-            {state}
-          </button>
+         <button
+  type="submit"
+  disabled={loading}
+  className="w-full py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {loading ? (
+    <div className="flex items-center justify-center gap-2">
+      
+      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      {state === "Sign Up" ? "Signing Up..." : "Logging In..."}
+    </div>
+  ) : (
+    state
+  )}
+</button>
         </form>
 
         {/* Toggle Login / Signup */}
@@ -175,9 +231,11 @@ export default function LoginPage() {
             ? "Already have an account? "
             : "Don't have an account? "}
           <button
+            type="button"
             onClick={() => {
               setState(state === "Sign Up" ? "Log In" : "Sign Up");
               setError("");
+              setRememberMe(false);
             }}
             className="text-blue-600 font-semibold hover:underline"
           >
@@ -185,6 +243,10 @@ export default function LoginPage() {
           </button>
         </p>
 
+        {/* Footer */}
+        <p className="text-center text-gray-400 text-xs mt-4">
+          © 2026 TrustMart. All rights reserved.
+        </p>
       </div>
     </div>
   );
