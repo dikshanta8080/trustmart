@@ -37,3 +37,10 @@ export const fraudAlerts = [
   { id: 3, title: "Unusual transaction velocity", detail: "User priya.s completed 23 transactions in 48 hours", severity: "medium" },
 ];
 
+export const fraudRules = [
+  { rule: "Multiple accounts / device", trigger: "3+ accounts same IP in 24h", action: "Auto-freeze + alert", status: "active" },
+  { rule: "Price manipulation", trigger: "30+ price edits in 2h", action: "Flag for review", status: "active" },
+  { rule: "Fake review detection", trigger: "5+ reviews in 1h same IP", action: "Block reviews + alert", status: "active" },
+  { rule: "Unusual transaction velocity", trigger: "20+ transactions in 48h", action: "Hold funds + notify", status: "review" },
+];
+
