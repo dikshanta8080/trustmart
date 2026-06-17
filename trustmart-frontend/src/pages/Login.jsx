@@ -4,6 +4,7 @@ import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 export default function LoginPage() {
   const [state, setState] = useState("Sign Up");
   const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,6 +29,23 @@ export default function LoginPage() {
         </div>
 
         <form className="space-y-4">
+          {/* Full Name - Only for Sign Up */}
+          {state === "Sign Up" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter your full name"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                required
+              />
+            </div>
+          )}
+
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
