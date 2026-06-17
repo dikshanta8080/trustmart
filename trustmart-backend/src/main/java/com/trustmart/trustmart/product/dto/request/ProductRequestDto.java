@@ -1,4 +1,4 @@
-package com.trustmart.trustmart.product.dto.requestDto;
+package com.trustmart.trustmart.product.dto.request;
 
 import com.trustmart.trustmart.product.enums.ProductCondition;
 import com.trustmart.trustmart.product.enums.ProductStatus;
@@ -26,6 +26,9 @@ public record ProductRequestDto(
         String location,
 
         @NotBlank(message = "Status is required")
-        ProductStatus status
+        ProductStatus status,
+
+        @NotBlank(message = "Image Url is required")
+        String imageUrl
 ) {
 }

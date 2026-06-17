@@ -1,19 +1,21 @@
-package com.trustmart.trustmart.product.dto.responseDto;
+package com.trustmart.trustmart.product.dto.response;
 
 import com.trustmart.trustmart.product.enums.ProductCondition;
 import com.trustmart.trustmart.product.enums.ProductStatus;
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Builder
 public record ProductResponseDto(
-        Long id,
+        UUID id,
         String title,
         String description,
         BigDecimal price,
         ProductCondition condition,
         String location,
-        ProductStatus status
+        ProductStatus status,
+        String imageUrl
 ) {
 }
