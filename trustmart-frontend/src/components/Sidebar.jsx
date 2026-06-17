@@ -1,26 +1,32 @@
+// src/components/Sidebar.jsx
+
 import { NavLink } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Users,
-  Package,
-  ShieldAlert,
-  Flag,
-  Tag,
-} from "lucide-react";
+import { LayoutDashboard, Users, Package, ShieldAlert, Flag, Tag } from "lucide-react";
+import { reports, fraudAlerts } from "../data/mockData";
 
 const navItems = [
   { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { path: "/admin/users", label: "Users", icon: Users },
   { path: "/admin/listings", label: "Listings", icon: Package },
-  { path: "/admin/fraud", label: "Fraud Monitoring", icon: ShieldAlert, badge: 5 },
-  { path: "/admin/reports", label: "Reports", icon: Flag, badge: 12 },
+  { 
+    path: "/admin/fraud", 
+    label: "Fraud Monitoring", 
+    icon: ShieldAlert, 
+    badge: fraudAlerts.filter(a => a.severity === "high").length || null
+  },
+  { 
+    path: "/admin/reports", 
+    label: "Reports", 
+    icon: Flag, 
+    badge: reports.filter(r => r.status === "open" || r.status === "escalated").length || null
+  },
   { path: "/admin/categories", label: "Categories", icon: Tag },
 ];
 
 const Sidebar = () => {
   return (
     <div className="w-56 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
-      
+
       {/* Logo */}
       <div className="px-5 py-5 border-b border-gray-200">
         <h1 className="text-base font-semibold text-gray-900">TrustMart</h1>
