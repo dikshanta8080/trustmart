@@ -7,11 +7,40 @@ export default function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false); // ADD THIS
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState(""); // ADD THIS
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    console.log({ action: state, fullName, email, password, rememberMe }); // UPDATE THIS
+    setError(""); // ADD THIS
+    
+    // ADD VALIDATION
+    if (state === "Sign Up" && !fullName.trim()) {
+      setError("Please enter your full name");
+      return;
+    }
+
+    if (!email.trim()) {
+      setError("Please enter your email");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Please enter your password");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+    
+    console.log({ action: state, fullName, email, password, rememberMe });
     alert(state === "Sign Up" ? "Account created!" : "Login successful!");
   };
 
@@ -35,6 +64,16 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Error Message - ADD THIS */}
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-2.5 rounded-lg mb-4 flex items-center gap-2 text-sm">
+            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={onSubmitHandler} className="space-y-4">
           {/* Full Name - Only for Sign Up */}
           {state === "Sign Up" && (
@@ -45,7 +84,10 @@ export default function LoginPage() {
               <input
                 type="text"
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  setError("");
+                }}
                 placeholder="Enter your full name"
                 className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                 required
@@ -61,7 +103,10 @@ export default function LoginPage() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
               placeholder="Enter your email"
               className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
               required
@@ -77,7 +122,10 @@ export default function LoginPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
                 placeholder="Enter your password"
                 className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12"
                 required
@@ -91,9 +139,9 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Remember Me - Only for Login */}
+          {/* Remember Me & Forgot Password - Only for Login */}
           {state !== "Sign Up" && (
-            <div className="flex items-center">
+            <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
@@ -102,6 +150,12 @@ export default function LoginPage() {
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 Remember me
+              </label>
+              <label
+                className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                onClick={() => alert("Password reset link sent to your email!")}
+              >
+                Forgot password?
               </label>
             </div>
           )}
@@ -121,7 +175,10 @@ export default function LoginPage() {
             ? "Already have an account? "
             : "Don't have an account? "}
           <button
-            onClick={() => setState(state === "Sign Up" ? "Log In" : "Sign Up")}
+            onClick={() => {
+              setState(state === "Sign Up" ? "Log In" : "Sign Up");
+              setError("");
+            }}
             className="text-blue-600 font-semibold hover:underline"
           >
             {state === "Sign Up" ? "Login" : "Signup"}
