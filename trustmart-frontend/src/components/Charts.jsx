@@ -57,3 +57,46 @@ export const WeeklyUsersChart = () => {
   );
 };
 
+// Pie chart — listings by category
+export const CategoryPieChart = () => {
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl p-4">
+      <h3 className="text-sm font-medium text-gray-800 mb-4">
+        Listings by Category
+      </h3>
+      <ResponsiveContainer width="100%" height={180}>
+        <PieChart>
+          <Pie
+            data={analyticsData.categoryBreakdown}
+            cx="50%"
+            cy="50%"
+            innerRadius={50}
+            outerRadius={75}
+            paddingAngle={3}
+            dataKey="value"
+          >
+            {analyticsData.categoryBreakdown.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Tooltip
+            contentStyle={{
+              fontSize: 12,
+              borderRadius: 8,
+              border: "1px solid #E5E7EB",
+            }}
+            formatter={(value) => `${value}%`}
+          />
+          <Legend
+            iconType="square"
+            iconSize={10}
+            wrapperStyle={{ fontSize: 12 }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
