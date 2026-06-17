@@ -1,8 +1,13 @@
+import {Routes, Route} from "react-router-dom";
+import WishlistPage from "./pages/WishlistPage";
+
+
 function App() {
   return (
-    <BrowserRouter>
-      <h1> Hello world</h1>
-    </BrowserRouter>
+    <Routes>
+     
+    <Route path="/" element={<WishlistPage />} />
+    </Routes>
   );
 }
 export default App;
