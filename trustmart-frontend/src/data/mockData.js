@@ -44,3 +44,21 @@ export const fraudRules = [
   { rule: "Unusual transaction velocity", trigger: "20+ transactions in 48h", action: "Hold funds + notify", status: "review" },
 ];
 
+export const analyticsData = {
+  weeklyUsers: [
+    { day: "Mon", users: 210 },
+    { day: "Tue", users: 340 },
+    { day: "Wed", users: 290 },
+    { day: "Thu", users: 480 },
+    { day: "Fri", users: 520 },
+    { day: "Sat", users: 390 },
+    { day: "Sun", users: 310 },
+  ],
+  categoryBreakdown: [
+    { name: "Electronics", value: 35 },
+    { name: "Vehicles", value: 22 },
+    { name: "Furniture", value: 18 },
+    { name: "Phones", value: 15 },
+    { name: "Other", value: 10 },
+  ],
+};
