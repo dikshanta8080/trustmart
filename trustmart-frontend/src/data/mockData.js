@@ -30,3 +30,10 @@ export const categories = [
   { id: 4, name: "Phones", listings: 1311, subcategories: 5, status: "active" },
   { id: 5, name: "Clothing", listings: 542, subcategories: 4, status: "limited" },
 ];
+
+export const fraudAlerts = [
+  { id: 1, title: "Multiple accounts from same device", detail: "Accounts: amit.m@, am_mishra@, amishra99@ — same IP 192.168.1.44", severity: "high" },
+  { id: 2, title: "Rapid listing price changes", detail: "User nikhil.j changed prices 47 times in 2 hours", severity: "high" },
+  { id: 3, title: "Unusual transaction velocity", detail: "User priya.s completed 23 transactions in 48 hours", severity: "medium" },
+];
+
