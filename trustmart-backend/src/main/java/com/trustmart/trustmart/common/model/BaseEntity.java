@@ -3,7 +3,10 @@ package com.trustmart.trustmart.common.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,7 +18,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-@Builder
 @Getter
 @Setter
 @SQLRestriction("deleted=false")
@@ -23,7 +25,7 @@ public abstract class BaseEntity {
     @Id
     @UuidGenerator
     @Column(nullable = false, unique = true, updatable = false)
-    private UUID ID;
+    private UUID id;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false, name = "created_at")
@@ -33,7 +35,6 @@ public abstract class BaseEntity {
     @Column(nullable = false, name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Builder.Default
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 }
