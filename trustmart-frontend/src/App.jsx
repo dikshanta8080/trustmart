@@ -1,17 +1,13 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import AdminRoutes from "./routes/AdminRoutes";
-import LoginPage from "./pages/LoginPage";
-import ForgetPasswordPage from "./pages/ForgetPasswordPage";
+import {Routes, Route} from "react-router-dom";
+import WishlistPage from "./pages/WishlistPage";
 
-const App = () => {
-  const isAuthenticated = false;
 
+function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-      <Route path="/*" element={<AdminRoutes />} />
+     
+    <Route path="/" element={<WishlistPage />} />
     </Routes>
   );
-};
-
+}
 export default App;
