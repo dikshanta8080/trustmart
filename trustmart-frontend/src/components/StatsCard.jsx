@@ -1,5 +1,3 @@
-// src/components/StatsCard.jsx
-
 const StatsCard = ({ label, value, delta, deltaType, icon: Icon, iconColor }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4">
