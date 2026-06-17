@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 
 export default function LoginPage() {
   const [state, setState] = useState("Sign Up");
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 p-4">
@@ -38,6 +41,29 @@ export default function LoginPage() {
               className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
               required
             />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12"
+                required
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-4 flex items-center cursor-pointer text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <FaEye /> : <FaRegEyeSlash />}
+              </span>
+            </div>
           </div>
         </form>
 
