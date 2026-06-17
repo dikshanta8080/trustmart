@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 export default function LoginPage() {
   const [state, setState] = useState("Sign Up");
+  const [email, setEmail] = useState("");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 p-4">
@@ -22,6 +23,23 @@ export default function LoginPage() {
             {state === "Sign Up" ? "Create your account" : "Sign in to your account"}
           </p>
         </div>
+
+        <form className="space-y-4">
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              required
+            />
+          </div>
+        </form>
 
       </div>
     </div>
