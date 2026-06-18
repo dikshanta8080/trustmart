@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "unq_email", columnNames = {"email"}))
 @Getter
@@ -31,21 +28,8 @@ public class User extends BaseEntity {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    public void addRole(Role role) {
-        if (role != null) {
-            roles.add(role);
-        }
-    }
 
-    public void removeRole(Role role) {
-        if (role != null) {
-            roles.remove(role);
-        }
-    }
 }
