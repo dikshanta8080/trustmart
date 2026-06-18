@@ -8,25 +8,25 @@ export default function ForgetPasswordPage() {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   const handleSendOTP = () => {
-  if (method === "email" && !email.trim()) {
-    alert("Please enter your email");
-    return;
-  }
+    if (method === "email" && !email.trim()) {
+      alert("Please enter your email");
+      return;
+    }
 
-  if (method === "phone" && !phone.trim()) {
-    alert("Please enter your phone number");
-    return;
-  }
+    if (method === "phone" && !phone.trim()) {
+      alert("Please enter your phone number");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  setTimeout(() => {
-    setLoading(false);
-    alert("OTP sent successfully!");
-  }, 1500);
-};
+    setTimeout(() => {
+      setLoading(false);
+      alert("OTP sent successfully!");
+    }, 1500);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
@@ -106,6 +106,23 @@ export default function ForgetPasswordPage() {
           </div>
         )}
 
+        {/* Send OTP Button */}
+        <button
+          type="button"
+          onClick={handleSendOTP}
+          disabled={loading}
+          className="w-full mt-5 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-70"
+        >
+          {loading ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              Sending OTP...
+            </div>
+          ) : (
+            "Send OTP"
+          )}
+        </button>
+
         <p className="text-center text-sm text-gray-500 mt-6">
           <Link
             to="/login"
@@ -119,4 +136,5 @@ export default function ForgetPasswordPage() {
       </div>
     </div>
   );
-} 
+}
+
