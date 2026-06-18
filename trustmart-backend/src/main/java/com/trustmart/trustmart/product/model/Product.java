@@ -41,4 +41,7 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String imageUrl;
+
+    @ManyToOne
+    private Category category;
 }
