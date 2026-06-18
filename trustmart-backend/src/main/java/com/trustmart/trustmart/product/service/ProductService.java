@@ -1,13 +1,11 @@
 package com.trustmart.trustmart.product.service;
 
-import com.trustmart.trustmart.common.dto.response.ApiResponse;
 import com.trustmart.trustmart.common.dto.response.PagedResponse;
 import com.trustmart.trustmart.product.dto.request.ProductRequestDto;
 import com.trustmart.trustmart.product.dto.response.ProductResponseDto;
 import com.trustmart.trustmart.product.mapper.ProductMapper;
 import com.trustmart.trustmart.product.model.Product;
 import com.trustmart.trustmart.product.repository.ProductRepository;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +16,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Builder
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -50,7 +47,7 @@ public class ProductService {
             product.setDescription(productRequestDto.description());
         }
         if(productRequestDto.title() != null){
-            product.setDescription(productRequestDto.description());
+            product.setTitle(productRequestDto.title());
         }
         return ProductMapper.toResponse(productRepository.save(product));
     }
@@ -58,8 +55,8 @@ public class ProductService {
     @Transactional
     public void deleteProduct(UUID uuid){
         int rowsAffected = productRepository.softDeleteById(uuid);
-        if(rowsAffected<0){
-            throw new RuntimeException("Failed to delete to product");
+        if(rowsAffected==0){
+            throw new IllegalArgumentException("Product not found");
         }
     }
 }
