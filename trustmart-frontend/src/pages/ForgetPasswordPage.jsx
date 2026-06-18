@@ -38,6 +38,19 @@ export default function ForgetPasswordPage() {
             <Mail className="w-4 h-4" />
             Email
           </button>
+
+          <button
+            type="button"
+            onClick={() => setMethod("phone")}
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition ${
+              method === "phone"
+                ? "border-blue-600 bg-blue-50 text-blue-600"
+                : "border-gray-200 text-gray-600"
+            }`}
+          >
+            <Phone className="w-4 h-4" />
+            Phone
+          </button>
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">
