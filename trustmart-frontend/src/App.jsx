@@ -1,16 +1,17 @@
-// src/App.jsx
-
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import AdminRoutes from "./routes/AdminRoutes";
+import LoginPage from "./pages/LoginPage";
 
 const App = () => {
+  const isAuthenticated = false;
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="/*" element={<AdminRoutes />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/admin/*" element={isAuthenticated ? <AdminRoutes /> : <Navigate to="/login" replace />}   />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 };
 
