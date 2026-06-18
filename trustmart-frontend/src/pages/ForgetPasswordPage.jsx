@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
+import { Shield, ArrowLeft, Mail, Phone } from "lucide-react";
 
 export default function ForgetPasswordPage() {
+  const [method, setMethod] = useState("email");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
 
+        {/* Header */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center mb-3">
             <Shield className="w-6 h-6 text-white" />
@@ -17,9 +20,35 @@ export default function ForgetPasswordPage() {
           </h1>
 
           <p className="text-gray-500 text-sm mt-1 text-center">
-            Reset your account password
+            Choose how you want to recover your account
           </p>
         </div>
+
+        {/* Recovery Method */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <button
+            type="button"
+            onClick={() => setMethod("email")}
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition ${
+              method === "email"
+                ? "border-blue-600 bg-blue-50 text-blue-600"
+                : "border-gray-200 text-gray-600"
+            }`}
+          >
+            <Mail className="w-4 h-4" />
+            Email
+          </button>
+        </div>
+
+        <p className="text-center text-sm text-gray-500 mt-6">
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-2 text-blue-600 hover:underline font-medium"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Sign In
+          </Link>
+        </p>
 
       </div>
     </div>
