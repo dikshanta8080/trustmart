@@ -3,6 +3,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import LoginPage from "./pages/LoginPage";
 
 const App = () => {
+  // Authentication status - pachi true/false garda hunxa
   const isAuthenticated = false;
 
   return (

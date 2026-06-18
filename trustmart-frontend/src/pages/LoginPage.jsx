@@ -1,8 +1,5 @@
-// React hooks import for state and side effects
 import { useState, useEffect } from "react";
-// React Router hooks - for page navigation and creating links
 import { Link, useNavigate } from "react-router-dom";
-// Icons import - logo, email, lock, eye etc
 import { Shield, Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 
 // Main LoginPage component - this function renders the login/signup page
