@@ -21,37 +21,33 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@RequestBody ProductRequestDto productRequestDto){
         ProductResponseDto productResponseDto = productService.addProduct(productRequestDto);
-        return ResponseEntity.ok().body(ApiResponse.success(productResponseDto));
+        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product created successfully"));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<ProductResponseDto>>> getAllProducts(@ModelAttribute PaginationRequest paginationRequest){
         PagedResponse<ProductResponseDto> allProducts = productService.getAllProducts(paginationRequest.toPageable());
-        ApiResponse<PagedResponse<ProductResponseDto>> apiResponse = ApiResponse.<PagedResponse<ProductResponseDto>>builder()
-                .message("Products Fetched successfully")
-                .data(allProducts)
-                .success(true)
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(ApiResponse.success(allProducts, "Products fetched successfully"));
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse<ProductResponseDto>> getProductById(@PathVariable UUID uuid){
         ProductResponseDto productResponse = productService.getProductById(uuid);
-        return ResponseEntity.ok().body(ApiResponse.success(productResponse));
+        return ResponseEntity.ok(ApiResponse.success(productResponse, "Product fetched successfully"));
     }
 
     @PutMapping("/{uuid}")
     public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@PathVariable UUID uuid,
                                                                          @RequestBody ProductRequestDto productRequestDto){
         ProductResponseDto productResponseDto = productService.updateProduct(uuid, productRequestDto);
-        return ResponseEntity.ok().body(ApiResponse.success(productResponseDto));
+        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product updated successfully"));
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable UUID uuid){
+        productService.deleteProduct(uuid);
         return ResponseEntity.ok(
-                ApiResponse.success("Product deleted successfully")
+                ApiResponse.<String>success(null, "Product deleted successfully")
         );
     }
 }
