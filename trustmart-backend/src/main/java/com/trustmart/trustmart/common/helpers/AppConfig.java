@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 public class AppConfig {
     private Jwt jwt;
     private Admin admin;
-    
-    @Setter
+
+    @Getter
     public static class Jwt {
         private Long expiry;
         private String secret;
