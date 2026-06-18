@@ -23,6 +23,8 @@ public class ProductController {
         return ResponseEntity.ok().body(ApiResponse.success(productResponseDto));
     }
 
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<PagedResponse<ProductResponseDto>>>
+    @GetMapping
+    public ResponseEntity<ApiResponse<PagedResponse<ProductResponseDto>>> getAllProducts(){
+        productService.getAllProducts();
+    }
 }
