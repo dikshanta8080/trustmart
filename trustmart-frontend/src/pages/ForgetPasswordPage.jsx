@@ -4,6 +4,8 @@ import { Shield, ArrowLeft, Mail, Phone } from "lucide-react";
 
 export default function ForgetPasswordPage() {
   const [method, setMethod] = useState("email");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
@@ -53,6 +55,37 @@ export default function ForgetPasswordPage() {
           </button>
         </div>
 
+        {/* Dynamic Form */}
+        {method === "email" ? (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+        ) : (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Phone Number
+            </label>
+
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="98XXXXXXXX"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+        )}
+
         <p className="text-center text-sm text-gray-500 mt-6">
           <Link
             to="/login"
@@ -66,4 +99,4 @@ export default function ForgetPasswordPage() {
       </div>
     </div>
   );
-}
+} 
