@@ -1,13 +1,22 @@
-import {Routes, Route} from "react-router-dom";
-import WishlistPage from "./pages/WishlistPage";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
 
 
 function App() {
   return (
     <Routes>
-     
-    <Route path="/" element={<WishlistPage />} />
+      <Route
+        path="/"
+        element={
+          <>
+            <Header />
+            
+          </>
+        }
+      />
     </Routes>
   );
 }
+
 export default App;
