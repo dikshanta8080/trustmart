@@ -6,7 +6,27 @@ export default function ForgetPasswordPage() {
   const [method, setMethod] = useState("email");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
 
+
+  const handleSendOTP = () => {
+  if (method === "email" && !email.trim()) {
+    alert("Please enter your email");
+    return;
+  }
+
+  if (method === "phone" && !phone.trim()) {
+    alert("Please enter your phone number");
+    return;
+  }
+
+  setLoading(true);
+
+  setTimeout(() => {
+    setLoading(false);
+    alert("OTP sent successfully!");
+  }, 1500);
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
