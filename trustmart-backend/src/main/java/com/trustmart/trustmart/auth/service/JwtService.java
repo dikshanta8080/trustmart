@@ -31,7 +31,7 @@ public class JwtService {
                 .expiration(new Date(System.currentTimeMillis() + appConfig.getJwt().getExpiry() * 60 * 1000L))
                 .claim("name", userPrinciple.getName())
                 .claim("id", userPrinciple.getId())
-                .claim("roles", userPrinciple.getRoles())
+                .claim("role", userPrinciple.getRole())
                 .compact();
     }
 
