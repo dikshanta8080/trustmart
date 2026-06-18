@@ -10,7 +10,7 @@ const StatsCard = ({ label, value, delta, deltaType, icon: Icon, iconColor }) =>
         <p className="text-xs text-gray-500">{label}</p>
       </div>
 
-      {/* Value */}
+      {/* Value statsCard */}
       <p className="text-2xl font-semibold text-gray-900">{value}</p>
 
       {/* Delta */}
