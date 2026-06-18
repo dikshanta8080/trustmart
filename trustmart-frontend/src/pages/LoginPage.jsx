@@ -376,8 +376,6 @@ export default function LoginPage() {
         </div>
 
       </div>
-      {/* End of Wrapper */}
     </div>
-    // End of Main Container
   );
 }
