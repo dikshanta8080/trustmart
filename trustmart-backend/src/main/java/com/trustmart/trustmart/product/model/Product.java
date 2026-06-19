@@ -4,18 +4,19 @@ import com.trustmart.trustmart.common.model.BaseEntity;
 import com.trustmart.trustmart.product.enums.ProductCondition;
 import com.trustmart.trustmart.product.enums.ProductStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "products")
 @Getter
 @Setter
 @SuperBuilder
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product extends BaseEntity {
@@ -40,4 +41,8 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String imageUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

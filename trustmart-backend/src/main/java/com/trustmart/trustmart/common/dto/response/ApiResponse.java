@@ -8,15 +8,15 @@ public record ApiResponse<T>(
         String message,
         T data
 ) {
-    public static <T> ApiResponse<T> success(T data) {
-        return new ApiResponse<>(
+    public static <T> ApiResponse<T> success(T data, String message) {
+        return new ApiResponse<T>(
                 true,
-                "Success",
+                message,
                 data);
     }
 
     public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(
+        return new ApiResponse<T>(
                 false,
                 message,
                 null);

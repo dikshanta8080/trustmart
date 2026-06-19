@@ -1,0 +1,30 @@
+package com.trustmart.trustmart.common.helpers;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+
+@ConfigurationProperties(prefix = "app")
+@Getter
+@Setter
+public class AppConfig {
+    private Jwt jwt;
+    private Admin admin;
+
+    @Getter
+    @Setter
+    public static class Jwt {
+        private Long expiry;
+        private String secret;
+    }
+
+    @Getter
+    @Setter
+    public static class Admin {
+        private String name;
+        private String email;
+        private String password;
+        private String address;
+    }
+}
