@@ -43,5 +43,6 @@ public class Product extends BaseEntity {
     private String imageUrl;
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 }
