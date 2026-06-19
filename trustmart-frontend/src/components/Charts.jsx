@@ -7,6 +7,7 @@ import { analyticsData } from "../data/mockData";
 
 const COLORS = ["#3B82F6", "#10B981", "#8B5CF6", "#EC4899", "#F59E0B"];
 
+//weeklyuserschart//
 export const WeeklyUsersChart = () => {
   return (
     <ResponsiveContainer width="100%" height={220}>
