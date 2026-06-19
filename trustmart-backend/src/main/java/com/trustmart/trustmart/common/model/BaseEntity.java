@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -30,9 +32,11 @@ public abstract class BaseEntity {
     @Column(nullable = false, unique = true, updatable = false)
     private UUID id;
 
+    @CreationTimestamp
     @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(nullable = false, name = "updated_at")
     private LocalDateTime updatedAt;
 

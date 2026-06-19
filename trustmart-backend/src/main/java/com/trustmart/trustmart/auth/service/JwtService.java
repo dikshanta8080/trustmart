@@ -58,7 +58,7 @@ public class JwtService {
     }
 
     public boolean verifyToken(String token, UserPrinciple userPrinciple) {
-        return extractExpiry(token).before(new Date(System.currentTimeMillis()))
+        return extractExpiry(token).after(new Date(System.currentTimeMillis()))
                 && extractUsername(token).equals(userPrinciple.getUsername());
     }
 
