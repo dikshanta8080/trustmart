@@ -9,7 +9,12 @@ public enum Permission {
     PRODUCT_ADD,
     PRODUCT_VIEW,
     GREET_ADMIN,
-    PRODUCT_UPDATE;
+    PRODUCT_UPDATE,
+
+    ALL_USER_VIEW,
+    USER_VIEW,
+    USER_UPDATE,
+    USER_DELETE;
 
 
 }
