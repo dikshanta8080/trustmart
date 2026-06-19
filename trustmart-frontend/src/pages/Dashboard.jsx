@@ -38,7 +38,7 @@ const dotColor = {
   medium: "bg-amber-400",
   low: "bg-green-400",
 };
-
+//for calendar//
 const MiniCalendar = () => {
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(today);
