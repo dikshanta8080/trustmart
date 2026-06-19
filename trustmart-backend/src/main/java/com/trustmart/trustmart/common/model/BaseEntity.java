@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,7 +24,6 @@ import java.util.UUID;
 @SuperBuilder
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-@SQLRestriction("deleted=false")
 public abstract class BaseEntity {
     @Id
     @UuidGenerator

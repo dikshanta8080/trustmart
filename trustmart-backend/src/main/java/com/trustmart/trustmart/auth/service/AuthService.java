@@ -24,6 +24,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
+
     @Transactional
     public UserResponse registerCustomer(RegistrationRequest request) {
         return userService.createCustomer(request);
