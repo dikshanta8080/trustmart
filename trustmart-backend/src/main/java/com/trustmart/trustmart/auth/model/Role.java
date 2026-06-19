@@ -10,8 +10,8 @@ import java.util.Set;
 public enum Role {
     ADMIN(Set.of(
             Permission.PRODUCT_ADD,
-            Permission.PRODUCT_VIEW,
-            Permission.PRODUCT_UPDATE
+            Permission.PRODUCT_UPDATE,
+            Permission.GREET_ADMIN
 
     )), USER(Set.of(
             Permission.PRODUCT_ADD,

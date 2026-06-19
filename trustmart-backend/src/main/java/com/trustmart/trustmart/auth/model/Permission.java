@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum Permission {
     PRODUCT_ADD,
     PRODUCT_VIEW,
+    GREET_ADMIN,
     PRODUCT_UPDATE;
 
 
