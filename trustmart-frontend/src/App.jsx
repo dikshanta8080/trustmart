@@ -1,38 +1,31 @@
-import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Wishlist from './pages/Wishlist';
-import PurchaseHistory from './pages/PurchaseHistory';
+import { Navigate, Route, Routes } from "react-router-dom";
+import AdminRoutes from "./routes/AdminRoutes";
+import LoginPage from "./pages/LoginPage";
+import ForgetPasswordPage from "./pages/ForgetPasswordPage";
 
 
-function App() {
-  // Manage Active tab
-  const [activeTab, setActiveTab] = useState('purchases');
+const App = () => {
+  const isAuthenticated = false;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgetPasswordPage />} />
       
-      <div className="max-w-7xl mx-auto px-4 mt-6">
-        <div className="flex gap-6">
-          {/* Sidebar - Left */}
-          <div className="w-64 hidden md:block flex-shrink-0">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
-          
-          {/* Main Content - Right */}
-          <div className="flex-1">
-            <Routes>
-              <Route path="/" element={<PurchaseHistory />} />
-              <Route path="/purchases" element={<PurchaseHistory />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* Home Route - Only one "/" route */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      
+      {/* Admin Routes */}
+      <Route 
+        path="/admin/*" 
+        element={isAuthenticated ? <AdminRoutes /> : <Navigate to="/login" replace />} 
+      />
+      
+      {/* Catch all - Must be LAST */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
-}
+};
 
 export default App;
