@@ -5,11 +5,13 @@ import com.trustmart.trustmart.auth.model.User;
 import com.trustmart.trustmart.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Order(1)
 public class AdminInjector implements CommandLineRunner {
     private final AppConfig appConfig;
     private final UserRepository userRepository;
