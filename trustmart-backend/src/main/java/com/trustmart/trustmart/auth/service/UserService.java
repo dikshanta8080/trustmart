@@ -2,14 +2,18 @@ package com.trustmart.trustmart.auth.service;
 
 import com.trustmart.trustmart.auth.dto.request.RegistrationRequest;
 import com.trustmart.trustmart.auth.dto.response.UserResponse;
+import com.trustmart.trustmart.auth.mapper.EventMapper;
 import com.trustmart.trustmart.auth.mapper.UserMapper;
 import com.trustmart.trustmart.auth.model.Role;
 import com.trustmart.trustmart.auth.model.User;
 import com.trustmart.trustmart.auth.repository.UserRepository;
 import com.trustmart.trustmart.common.dto.response.PagedResponse;
 import com.trustmart.trustmart.common.exceptions.BusinessException;
+import com.trustmart.trustmart.common.exceptions.ResourceNotFoundException;
+import com.trustmart.trustmart.common.helpers.LoggedInUser;
 import com.trustmart.trustmart.common.specifications.UserSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,6 +28,7 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
 
     @Transactional
@@ -33,7 +38,9 @@ public class UserService {
         user.setRole(Role.USER);
 
         user.setPassword(passwordEncoder.encode(request.password()));
-        return UserMapper.toResponse(userRepository.save(user));
+        UserResponse response = UserMapper.toResponse(userRepository.save(user));
+        applicationEventPublisher.publishEvent(EventMapper.toEvent(response));
+        return response;
     }
 
 
@@ -57,5 +64,12 @@ public class UserService {
         if (rowsEffected <= 0) {
             throw new BusinessException("Could not delete the user");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUserProfile() {
+        UUID loggedInUserId = LoggedInUser.getLoggedInUserId();
+        User user = userRepository.findById(loggedInUserId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return UserMapper.toResponse(user);
     }
 }

@@ -34,4 +34,11 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.ok().body(ApiResponse.success("User deleted", "Deletion Completed"));
     }
+
+    @PreAuthorize("hasAuthority('USER_VIEW')")
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<UserResponse>> getProfile() {
+        UserResponse userProfile = userService.getUserProfile();
+        return ResponseEntity.ok().body(ApiResponse.success(userProfile, "Profile Fetched Successfully"));
+    }
 }
