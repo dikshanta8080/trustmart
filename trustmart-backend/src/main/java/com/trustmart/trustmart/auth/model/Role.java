@@ -11,12 +11,18 @@ public enum Role {
     ADMIN(Set.of(
             Permission.PRODUCT_ADD,
             Permission.PRODUCT_UPDATE,
-            Permission.GREET_ADMIN
+            Permission.GREET_ADMIN,
+            Permission.USER_VIEW,
+            Permission.ALL_USER_VIEW,
+            Permission.USER_UPDATE,
+            Permission.USER_DELETE
 
     )), USER(Set.of(
             Permission.PRODUCT_ADD,
             Permission.PRODUCT_VIEW,
-            Permission.PRODUCT_UPDATE
+            Permission.PRODUCT_UPDATE,
+            Permission.USER_VIEW,
+            Permission.USER_UPDATE
     ));
 
     private final Set<Permission> permissions;
