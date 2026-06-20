@@ -10,6 +10,7 @@ public enum Permission {
     PRODUCT_VIEW,
     GREET_ADMIN,
     PRODUCT_UPDATE,
+    PRODUCT_DELETE,
 
     ALL_USER_VIEW,
     USER_VIEW,
@@ -17,5 +18,9 @@ public enum Permission {
     USER_DELETE,
     PROFILE_UPDATE;
 
+    CATEGORY_ADD,
+    CATEGORY_VIEW,
+    CATEGORY_UPDATE,
+    CATEGORY_DELETE
 
 }
