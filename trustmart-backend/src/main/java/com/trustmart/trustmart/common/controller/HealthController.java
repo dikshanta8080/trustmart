@@ -2,7 +2,7 @@ package com.trustmart.trustmart.common.controller;
 
 import com.trustmart.trustmart.ImageUploadTest;
 import com.trustmart.trustmart.common.dto.response.ApiResponse;
-import com.trustmart.trustmart.product.dto.response.ImageDataResponse;
+import com.trustmart.trustmart.common.dto.response.ImageDataResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

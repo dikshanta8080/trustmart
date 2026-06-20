@@ -35,7 +35,7 @@ public class ImageUploadService {
                     .size(multipartFile.getSize())
                     .build();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file");
+            throw new RuntimeException(e);
         }
     }
 }

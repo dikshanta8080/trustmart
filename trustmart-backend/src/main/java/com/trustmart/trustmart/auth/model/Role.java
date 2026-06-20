@@ -15,14 +15,16 @@ public enum Role {
             Permission.USER_VIEW,
             Permission.ALL_USER_VIEW,
             Permission.USER_UPDATE,
-            Permission.USER_DELETE
+            Permission.USER_DELETE,
+            Permission.PROFILE_UPDATE
 
     )), USER(Set.of(
             Permission.PRODUCT_ADD,
             Permission.PRODUCT_VIEW,
             Permission.PRODUCT_UPDATE,
             Permission.USER_VIEW,
-            Permission.USER_UPDATE
+            Permission.USER_UPDATE,
+            Permission.PROFILE_UPDATE
     ));
 
     private final Set<Permission> permissions;

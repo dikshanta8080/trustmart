@@ -4,6 +4,7 @@ import com.trustmart.trustmart.auth.dto.request.RegistrationRequest;
 import com.trustmart.trustmart.auth.dto.response.LoginResponse;
 import com.trustmart.trustmart.auth.dto.response.UserResponse;
 import com.trustmart.trustmart.auth.model.User;
+import com.trustmart.trustmart.common.dto.response.ImageDataResponse;
 
 
 public class UserMapper {
@@ -13,6 +14,7 @@ public class UserMapper {
                 .name(user.getName())
                 .address(user.getAddress())
                 .email(user.getEmail())
+                .imageDataResponse(getImageData(user))
                 .role(user.getRole())
                 .build();
     }
@@ -28,12 +30,23 @@ public class UserMapper {
                 .build();
     }
 
-
     public static User toEntity(RegistrationRequest request) {
         return User.builder()
                 .name(request.name())
                 .email(request.email())
                 .address(request.address())
+                .build();
+    }
+
+    private static ImageDataResponse getImageData(User user) {
+        if (user.getImageData() == null) {
+            return null;
+        }
+        return ImageDataResponse.builder()
+                .imageId(user.getImageData()
+                        .getId())
+                .name(user.getImageData().getFileName())
+                .imagePath("http://localhost:8080/api/v1/uploads/" + user.getImageData().getFileName())
                 .build();
     }
 }

@@ -16,6 +16,7 @@ public enum Permission {
     USER_VIEW,
     USER_UPDATE,
     USER_DELETE,
+    PROFILE_UPDATE;
 
     CATEGORY_ADD,
     CATEGORY_VIEW,
