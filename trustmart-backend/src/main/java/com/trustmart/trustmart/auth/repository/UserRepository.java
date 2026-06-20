@@ -22,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     @Transactional
     @Query("UPDATE User u SET u.deleted=true WHERE u.id=:id")
     int softDeleteById(@Param(value = "id") UUID id);
+
+
 }
