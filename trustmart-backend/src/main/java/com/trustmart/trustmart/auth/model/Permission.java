@@ -14,7 +14,8 @@ public enum Permission {
     ALL_USER_VIEW,
     USER_VIEW,
     USER_UPDATE,
-    USER_DELETE;
+    USER_DELETE,
+    PROFILE_UPDATE;
 
 
 }
