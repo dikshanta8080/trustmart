@@ -1,6 +1,7 @@
 package com.trustmart.trustmart.auth.dto.response;
 
 import com.trustmart.trustmart.auth.model.Role;
+import com.trustmart.trustmart.common.dto.response.ImageDataResponse;
 import lombok.Builder;
 
 import java.util.UUID;
@@ -11,7 +12,15 @@ public record LoginResponse(
         String name,
         String address,
         String email,
-        String token,
-        Role role
+        TokenResponse tokenResponse,
+        Role role,
+        ImageDataResponse imageDataResponse
 ) {
+    @Builder
+    public record TokenResponse(
+            String accessToken,
+            String refreshToken
+    ) {
+
+    }
 }
