@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react";
-import { authAPI } from "../utils/api";
-
-//  Helper function to pad password to 6 characters
-const padPassword = (pwd) => {
-  if (!pwd) return pwd;
-  if (pwd.length >= 6) return pwd;
-  return pwd + 'x'.repeat(6 - pwd.length);
-};
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
@@ -21,11 +14,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState(""); 
   const [confirmPassword, setConfirmPassword] = useState("");
   
-  const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   
   const navigate = useNavigate();
+  const { login, register, loading, isAuthenticated } = useAuth();
 
   // Load saved email
   useEffect(() => {
@@ -38,18 +31,19 @@ export default function LoginPage() {
 
   // Check if already logged in
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (isAuthenticated()) {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
       const roles = user.roles || [];
       const isAdmin = roles.some(role => 
         role === "ROLE_ADMIN" || role === "ADMIN" || role === "admin"
       );
       if (isAdmin) {
         navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/user/dashboard", { replace: true });
       }
     }
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,74 +87,21 @@ export default function LoginPage() {
       return;
     }
 
-    setLoading(true);
-
     try {
-      // Pad password to 6 characters for backend
-      const paddedPassword = padPassword(password);
-
       if (isRegister) {
-        const response = await authAPI.register({
-          name: name.trim(),
-          address: address.trim(),
-          email: email.trim(),
-          password: paddedPassword  // ← Padded to 6 chars
-        });
-
-        alert(response.message || "Account created successfully!");
-        
+        await register({ name, address, email, password });
+        alert("Account created successfully!");
         setIsRegister(false);
         setName("");
         setAddress("");
         setPassword("");
         setConfirmPassword("");
         setEmail("");
-
       } else {
-        const response = await authAPI.login({
-          email: email.trim(),
-          password: paddedPassword  // ← Padded to 6 chars
-        });
-
-        const loginData = response.data;
-        
-        const roleNames = loginData.roles?.map(role => role.name) || [];
-        
-        const userData = {
-          id: loginData.id,
-          name: loginData.name,
-          address: loginData.address,
-          email: loginData.email,
-          roles: roleNames,
-          roleObjects: loginData.roles
-        };
-
-        localStorage.setItem("token", loginData.token);
-        localStorage.setItem("user", JSON.stringify(userData));
-
-        if (rememberMe) {
-          localStorage.setItem("rememberedEmail", email);
-        } else {
-          localStorage.removeItem("rememberedEmail");
-        }
-
-        const isAdmin = roleNames.some(role => 
-          role === "ROLE_ADMIN" || role === "ADMIN" || role === "admin"
-        );
-        
-        if (isAdmin) {
-          navigate("/admin/dashboard", { replace: true });
-        } else {
-          alert("User login successful! User Dashboard coming soon.");
-          navigate("/login", { replace: true });
-        }
+        await login(email, password, rememberMe);
       }
-
     } catch (err) {
-      console.error('Error:', err);
       setError(err.message || "Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -347,6 +288,18 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-gray-300"></div>
             <span className="text-xs text-gray-500">or continue with</span>
             <div className="flex-1 h-px bg-gray-300"></div>
+          </div>
+
+          {/* Social Login */}
+          <div className="grid grid-cols-2 gap-3">
+            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition">
+              <span className="text-red-500 font-bold text-lg">G</span>
+              Google
+            </button>
+            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition">
+              <span className="text-blue-600 font-bold text-lg">f</span>
+              Facebook
+            </button>
           </div>
 
           {/* Toggle Login/Register */}
