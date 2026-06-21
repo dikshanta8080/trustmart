@@ -1,15 +1,18 @@
 export const wishlistData = [
   {
     id: 1,
-    title: "HermanMiller Aeron Chair - Size B",
+    title: "Herman Miller Aeron Chair - Size B",
     price: 650,
     originalPrice: 1495,
     location: "Berkeley",
     rating: 4.6,
     reviews: 12,
-    image: "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&h=300&fit=crop",
-    seller: "Emily Rodri...",
-    addedTime: "1 day ago"
+    seller: "Alex Johnson",
+    sellerVerified: true,
+    condition: "Like New", 
+    status: "Good",
+    postedDate: "1 day ago",
+    image: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=150&h=150&fit=crop"
   },
   {
     id: 2,
@@ -19,9 +22,12 @@ export const wishlistData = [
     location: "San Jose",
     rating: 4.9,
     reviews: 89,
-    image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=300&fit=crop",
     seller: "David Park",
-    addedTime: "3 hours ago"
+    sellerVerified: false,
+    condition: "Good", 
+    status: "Good",
+    postedDate: "3 hours ago",
+    image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=150&h=150&fit=crop"
   },
   {
     id: 3,
@@ -31,8 +37,11 @@ export const wishlistData = [
     location: "Palo Alto",
     rating: 4.3,
     reviews: 6,
-    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&h=300&fit=crop",
     seller: "Priya Sharma",
-    addedTime: "2 days ago"
+    sellerVerified: false,
+    condition: "Fair", 
+    status: "Good",
+    postedDate: "2 days ago",
+    image: "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&h=300&fit=crop"
   }
 ];

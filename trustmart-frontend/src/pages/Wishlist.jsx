@@ -6,16 +6,16 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 
 const Wishlist = () => {
-  // 📌 State manage garne
+  //Manage State
   const [items, setItems] = useState(wishlistData);
   const [sortBy, setSortBy] = useState('newest');
 
-  // 📌 Remove garne
+  // Remove Item
   const removeItem = (id) => {
     setItems(items.filter(item => item.id !== id));
   };
 
-  // 📌 Sort garne
+  //Sort Items
   const getSortedItems = () => {
     const sorted = [...items];
     if (sortBy === 'price-low') {
@@ -23,7 +23,7 @@ const Wishlist = () => {
     } else if (sortBy === 'price-high') {
       return sorted.sort((a, b) => b.price - a.price);
     } else {
-      return sorted; // newest
+      return sorted;
     }
   };
 
@@ -107,11 +107,12 @@ const Wishlist = () => {
                   </div>
 
                   {/* Condition Badge */}
-                  <span className={`inline-block px-10
-                    py-3 rounded-full text-sm mt-2 ${
-                    item.condition === 'Like New' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-blue-100 text-blue-800'
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                    item.condition === 'Like New' ? 'bg-green-100 text-green-800' :
+                    item.condition === 'Good' ? 'bg-blue-100 text-blue-800' :
+                    item.condition === 'Fair' ? 'bg-yellow-100 text-yellow-800' :
+                    item.condition === 'Poor' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-800' // Default
                   }`}>
                     {item.condition}
                   </span>
