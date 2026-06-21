@@ -1,15 +1,20 @@
-// src/pages/LoginPage.jsx
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Mail, Lock, Eye, EyeOff, User, Home, Building } from "lucide-react";
+import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react";
 import { authAPI } from "../utils/api";
+
+//  Helper function to pad password to 6 characters
+const padPassword = (pwd) => {
+  if (!pwd) return pwd;
+  if (pwd.length >= 6) return pwd;
+  return pwd + 'x'.repeat(6 - pwd.length);
+};
 
 export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   
-  //  RegistrationRequest anusar fields
   const [name, setName] = useState("");        
   const [address, setAddress] = useState("");  
   const [email, setEmail] = useState("");      
@@ -31,11 +36,26 @@ export default function LoginPage() {
     }
   }, []);
 
+  // Check if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const roles = user.roles || [];
+      const isAdmin = roles.some(role => 
+        role === "ROLE_ADMIN" || role === "ADMIN" || role === "admin"
+      );
+      if (isAdmin) {
+        navigate("/admin/dashboard", { replace: true });
+      }
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    //  Validations - RegistrationRequest anusar
+    // Validation
     if (isRegister) {
       if (!name.trim()) {
         setError("Please enter your full name");
@@ -62,8 +82,9 @@ export default function LoginPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    // Allow 4 characters minimum
+    if (password.length < 4) {
+      setError("Password must be at least 4 characters");
       return;
     }
 
@@ -75,19 +96,19 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // Pad password to 6 characters for backend
+      const paddedPassword = padPassword(password);
+
       if (isRegister) {
-        //  REGISTER API CALL - RegistrationRequest anusar
         const response = await authAPI.register({
-          name: name.trim(),        //  "name" field
-          address: address.trim(),  //  "address" field
-          email: email.trim(),      //  "email" field
-          password: password        //  "password" field
+          name: name.trim(),
+          address: address.trim(),
+          email: email.trim(),
+          password: paddedPassword  // ← Padded to 6 chars
         });
 
-        //  Response: { success: true, data: UserResponse, message: "Customer Registered Successfully" }
         alert(response.message || "Account created successfully!");
         
-        // Reset form and switch to login
         setIsRegister(false);
         setName("");
         setAddress("");
@@ -96,41 +117,48 @@ export default function LoginPage() {
         setEmail("");
 
       } else {
-        //  LOGIN API CALL - LoginRequest anusar
         const response = await authAPI.login({
-          email: email.trim(),   //  "email" field
-          password: password     //  "password" field
+          email: email.trim(),
+          password: paddedPassword  // ← Padded to 6 chars
         });
 
-        // Response: { success: true, data: LoginResponse, message: "Customer Registered Successfully" }
         const loginData = response.data;
         
-        // LoginResponse fields: { id, name, address, email, token, roles }
+        const roleNames = loginData.roles?.map(role => role.name) || [];
+        
         const userData = {
           id: loginData.id,
           name: loginData.name,
           address: loginData.address,
           email: loginData.email,
-          roles: loginData.roles
+          roles: roleNames,
+          roleObjects: loginData.roles
         };
 
-        // Save token and user data
         localStorage.setItem("token", loginData.token);
         localStorage.setItem("user", JSON.stringify(userData));
 
-        // Remember me
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", email);
         } else {
           localStorage.removeItem("rememberedEmail");
         }
 
-        //  Redirect to dashboard
-        navigate("/dashboard");
+        const isAdmin = roleNames.some(role => 
+          role === "ROLE_ADMIN" || role === "ADMIN" || role === "admin"
+        );
+        
+        if (isAdmin) {
+          navigate("/admin/dashboard", { replace: true });
+        } else {
+          alert("User login successful! User Dashboard coming soon.");
+          navigate("/login", { replace: true });
+        }
       }
 
     } catch (err) {
-      setError(err.message);
+      console.error('Error:', err);
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -319,18 +347,6 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-gray-300"></div>
             <span className="text-xs text-gray-500">or continue with</span>
             <div className="flex-1 h-px bg-gray-300"></div>
-          </div>
-
-          {/* Social Login */}
-          <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition">
-              <span className="text-red-500 font-bold text-lg">G</span>
-              Google
-            </button>
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition">
-              <span className="text-blue-600 font-bold text-lg">f</span>
-              Facebook
-            </button>
           </div>
 
           {/* Toggle Login/Register */}
