@@ -1,16 +1,12 @@
-server:
-  port: 8081
-
 spring:
   mail:
-    host: smtp.gmail.com
     port: 587
-    username: defaultexample@gmail.com
-    password: xxxxx xxxxx xxxxx xxxxx
+    username: dikshantaacharya04@gmail.com
+    password: lhfz qiuy qhzv houl
+    host: smtp.gmail.com
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
-
   datasource:
     url: jdbc:postgresql://localhost:5432/trustmart
     username: postgres
@@ -23,7 +19,6 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-      leak-detection-threshold: 5000
 
   jpa:
     hibernate:
@@ -35,3 +30,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        
