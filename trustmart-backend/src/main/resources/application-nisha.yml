@@ -1,8 +1,8 @@
 spring:
   mail:
     port: 587
-    username: defaultexample@gmail.com
-    password: xxxxx xxxxx xxxxx xxxxx
+    username: dikshantaacharya04@gmail.com
+    password: lhfz qiuy qhzv houl
     host: smtp.gmail.com
     properties:
       mail.smtp.auth: true
@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/trustmart
     username: postgres
-    password: root
+    password: 1234
 
     hikari:
       pool-name: TrustMartPool
@@ -19,11 +19,10 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-      leak-detection-threshold: 5000
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
 
     show-sql: false
 
@@ -31,3 +30,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        
