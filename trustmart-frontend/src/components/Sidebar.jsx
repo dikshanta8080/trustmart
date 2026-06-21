@@ -7,10 +7,11 @@ import {
   StarIcon,
   Cog6ToothIcon
 } from '@heroicons/react/24/outline';
+import { wishlistData } from '../data/sampleData';
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
   return (
-    <aside className="w-64 shrink-0 ml-15 mt-4">
+    <aside className="w-64 shrink-0 -ml-15 mt-0">
 
       {/* User Profile Card */}
       <div className="bg-white rounded-xl shadow-sm p-4 mb-4 ">
