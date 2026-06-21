@@ -7,6 +7,7 @@ import {
   ChatBubbleLeftIcon
 } from '@heroicons/react/24/outline';
 
+
 const Header = () => {
   return (
     <header className="bg-white border-b sticky top-0 z-50">
