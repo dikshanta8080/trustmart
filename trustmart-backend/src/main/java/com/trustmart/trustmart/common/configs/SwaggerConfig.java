@@ -23,7 +23,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Medical Ecommerce System API")
+                        .title("Trustmart System API")
                         .version("1.0.0")
                         .description("API documentation for Ecommerce System"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))

@@ -1,20 +1,26 @@
 package com.trustmart.trustmart.auth.model;
 
-import com.trustmart.trustmart.common.model.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
-@Entity
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-@Table(name = "permissions", uniqueConstraints = {@UniqueConstraint(name = "permission_uq", columnNames = {"name"})})
-public class Permission extends BaseEntity {
-    private String name;
+public enum Permission {
+    PRODUCT_ADD,
+    PRODUCT_VIEW,
+    GREET_ADMIN,
+    PRODUCT_UPDATE,
+    PRODUCT_DELETE,
+
+    ALL_USER_VIEW,
+    USER_VIEW,
+    USER_UPDATE,
+    USER_DELETE,
+    PROFILE_UPDATE,
+
+    CATEGORY_ADD,
+    CATEGORY_VIEW,
+    CATEGORY_UPDATE,
+    CATEGORY_DELETE;
+
 }

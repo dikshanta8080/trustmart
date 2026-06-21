@@ -1,29 +1,31 @@
 package com.trustmart.trustmart.auth.model;
 
-import com.trustmart.trustmart.common.model.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "roles", uniqueConstraints = {@UniqueConstraint(name = "role_uq", columnNames = {"name"})})
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class Role extends BaseEntity {
-    @Column(nullable = false)
-    private String name;
-    
-    @Builder.Default
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "role_permissions",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Set<Permission> permissions = new HashSet<>();
+@Getter
+public enum Role {
+    ADMIN(Set.of(
+            Permission.PRODUCT_ADD,
+            Permission.PRODUCT_UPDATE,
+            Permission.GREET_ADMIN,
+            Permission.USER_VIEW,
+            Permission.ALL_USER_VIEW,
+            Permission.USER_UPDATE,
+            Permission.USER_DELETE,
+            Permission.PROFILE_UPDATE
+
+    )), USER(Set.of(
+            Permission.PRODUCT_ADD,
+            Permission.PRODUCT_VIEW,
+            Permission.PRODUCT_UPDATE,
+            Permission.USER_VIEW,
+            Permission.USER_UPDATE,
+            Permission.PROFILE_UPDATE
+    ));
+
+    private final Set<Permission> permissions;
 }

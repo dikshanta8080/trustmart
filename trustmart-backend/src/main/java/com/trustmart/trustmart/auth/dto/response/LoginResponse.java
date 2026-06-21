@@ -1,32 +1,26 @@
 package com.trustmart.trustmart.auth.dto.response;
 
-import lombok.*;
+import com.trustmart.trustmart.auth.model.Role;
+import com.trustmart.trustmart.common.dto.response.ImageDataResponse;
+import lombok.Builder;
 
-import java.util.Set;
 import java.util.UUID;
 
-@Getter
-@Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class LoginResponse {
-
-    private UUID id;
-    private String name;
-    private String address;
-    private String email;
-    private String token;
-    private Set<RoleResponse> roles;
-
-    @Getter
-    @Setter
+public record LoginResponse(
+        UUID id,
+        String name,
+        String address,
+        String email,
+        TokenResponse tokenResponse,
+        Role role,
+        ImageDataResponse imageDataResponse
+) {
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class RoleResponse {
+    public record TokenResponse(
+            String accessToken,
+            String refreshToken
+    ) {
 
-        private UUID id;
-        private String name;
     }
 }

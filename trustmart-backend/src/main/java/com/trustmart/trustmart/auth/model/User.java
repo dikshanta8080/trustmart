@@ -1,15 +1,14 @@
 package com.trustmart.trustmart.auth.model;
 
 import com.trustmart.trustmart.common.model.BaseEntity;
+import com.trustmart.trustmart.common.model.ImageData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "unq_email", columnNames = {"email"}))
@@ -18,6 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@SQLRestriction("deleted=false")
 public class User extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
@@ -31,21 +31,12 @@ public class User extends BaseEntity {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    public void addRole(Role role) {
-        if (role != null) {
-            roles.add(role);
-        }
-    }
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id")
+    private ImageData imageData;
 
-    public void removeRole(Role role) {
-        if (role != null) {
-            roles.remove(role);
-        }
-    }
+
 }

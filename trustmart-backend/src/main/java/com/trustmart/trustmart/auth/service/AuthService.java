@@ -23,6 +23,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
+
 
     @Transactional
     public UserResponse registerCustomer(RegistrationRequest request) {
@@ -40,7 +42,8 @@ public class AuthService {
             com.trustmart.trustmart.auth.model.User user = userRepository.findById(userPrinciple.getId())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             String jwt = jwtService.getJwt(userPrinciple);
-            return UserMapper.toLoginResponse(user, jwt);
+            String refreshToken = refreshTokenService.createToken(userPrinciple.getId());
+            return UserMapper.toLoginResponse(user, jwt, refreshToken);
 
         } catch (AuthenticationException e) {
             throw new RuntimeException(e);

@@ -31,7 +31,7 @@ public class JwtService {
                 .expiration(new Date(System.currentTimeMillis() + appConfig.getJwt().getExpiry() * 60 * 1000L))
                 .claim("name", userPrinciple.getName())
                 .claim("id", userPrinciple.getId())
-                .claim("roles", userPrinciple.getRoles())
+                .claim("role", userPrinciple.getRole())
                 .compact();
     }
 
@@ -58,7 +58,7 @@ public class JwtService {
     }
 
     public boolean verifyToken(String token, UserPrinciple userPrinciple) {
-        return extractExpiry(token).before(new Date(System.currentTimeMillis()))
+        return extractExpiry(token).after(new Date(System.currentTimeMillis()))
                 && extractUsername(token).equals(userPrinciple.getUsername());
     }
 

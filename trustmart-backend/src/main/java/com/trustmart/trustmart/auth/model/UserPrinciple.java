@@ -8,9 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -22,22 +22,14 @@ public class UserPrinciple implements UserDetails {
     private String name;
     private String email;
     private String password;
-    private Set<Role> roles;
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        for (Role role : roles) {
-            authorities.add(
-                    new SimpleGrantedAuthority("ROLE_" + role.getName())
-            );
-            for (Permission permission : role.getPermissions()) {
-                authorities.add(
-                        new SimpleGrantedAuthority(permission.getName())
-                );
-            }
-        }
-
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        role.getPermissions().forEach(permission -> authorities
+                .add(new SimpleGrantedAuthority(permission.name())));
         return authorities;
     }
 
@@ -49,5 +41,25 @@ public class UserPrinciple implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

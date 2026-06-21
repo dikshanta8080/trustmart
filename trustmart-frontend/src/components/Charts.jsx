@@ -1,102 +1,58 @@
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
+  XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, PieChart, Pie, Cell,
+  Legend, Area, AreaChart,
 } from "recharts";
 import { analyticsData } from "../data/mockData";
 
-const COLORS = ["#3B82F6", "#10B981", "#8B5CF6", "#EC4899", "#9CA3AF"];
+const COLORS = ["#3B82F6", "#10B981", "#8B5CF6", "#EC4899", "#F59E0B"];
 
-// Line chart — weekly new users
+//weeklyuserschart//
 export const WeeklyUsersChart = () => {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4">
-      <h3 className="text-sm font-medium text-gray-800 mb-4">
-        New Users — Last 7 Days
-      </h3>
-      <ResponsiveContainer width="100%" height={180}>
-        <LineChart data={analyticsData.weeklyUsers}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-          <XAxis
-            dataKey="day"
-            tick={{ fontSize: 12, fill: "#9CA3AF" }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
-            tick={{ fontSize: 12, fill: "#9CA3AF" }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <Tooltip
-            contentStyle={{
-              fontSize: 12,
-              borderRadius: 8,
-              border: "1px solid #E5E7EB",
-            }}
-          />
-          <Line
-            type="monotone"
-            dataKey="users"
-            stroke="#3B82F6"
-            strokeWidth={2}
-            dot={{ r: 4, fill: "#3B82F6" }}
-            activeDot={{ r: 5 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height={220}>
+      <AreaChart data={analyticsData.weeklyUsers} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+        <defs>
+          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#6366F1" stopOpacity={0.25} />
+            <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+        <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
+        <Tooltip
+          contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          formatter={(value) => [value, "Users"]}
+        />
+        <Area type="monotone" dataKey="users" stroke="#6366F1" strokeWidth={2.5} fill="url(#areaGradient)"
+          dot={{ r: 4, fill: "#6366F1", stroke: "#fff", strokeWidth: 2 }} activeDot={{ r: 6 }} />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 };
 
-// Pie chart — listings by category
+//PieChart//
 export const CategoryPieChart = () => {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4">
-      <h3 className="text-sm font-medium text-gray-800 mb-4">
-        Listings by Category
-      </h3>
-      <ResponsiveContainer width="100%" height={180}>
-        <PieChart>
-          <Pie
-            data={analyticsData.categoryBreakdown}
-            cx="50%"
-            cy="50%"
-            innerRadius={50}
-            outerRadius={75}
-            paddingAngle={3}
-            dataKey="value"
-          >
-            {analyticsData.categoryBreakdown.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip
-            contentStyle={{
-              fontSize: 12,
-              borderRadius: 8,
-              border: "1px solid #E5E7EB",
-            }}
-            formatter={(value) => `${value}%`}
-          />
-          <Legend
-            iconType="square"
-            iconSize={10}
-            wrapperStyle={{ fontSize: 12 }}
-          />
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height={220}>
+      <PieChart>
+        <Pie
+          data={analyticsData.categoryBreakdown}
+          cx="40%" cy="50%"
+          innerRadius={60} outerRadius={90}
+          paddingAngle={3} dataKey="value"
+        >
+          {analyticsData.categoryBreakdown.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip
+          contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #E5E7EB" }}
+          formatter={(value) => [`${value}%`, "Share"]}
+        />
+        <Legend layout="vertical" align="right" verticalAlign="middle" iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12 }} />
+      </PieChart>
+    </ResponsiveContainer>
   );
 };
