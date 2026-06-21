@@ -18,3 +18,24 @@ const avatarColor = [
   "bg-green-100 text-green-700",
 ];
 
+const UserTable = () => {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [data, setData] = useState(users);
+
+  const filtered = data.filter((u) => {
+    const matchSearch =
+      u.name.toLowerCase().includes(search.toLowerCase()) ||
+      u.email.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = statusFilter === "all" || u.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
+  const handleSuspend = (id) => {
+    setData((prev) =>
+      prev.map((u) =>
+        u.id === id ? { ...u, status: u.status === "suspended" ? "active" : "suspended" } : u
+      )
+    );
+  };
+}
