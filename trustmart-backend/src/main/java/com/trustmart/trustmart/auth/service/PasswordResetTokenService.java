@@ -8,10 +8,11 @@ import com.trustmart.trustmart.auth.model.PasswordResetToken;
 import com.trustmart.trustmart.auth.model.User;
 import com.trustmart.trustmart.auth.repository.PasswordResetTokenRepo;
 import com.trustmart.trustmart.auth.repository.UserRepository;
+import com.trustmart.trustmart.common.events.OtpGeneratedEvent;
 import com.trustmart.trustmart.common.exceptions.BusinessException;
 import com.trustmart.trustmart.common.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,129 +20,83 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 @Service
 public class PasswordResetTokenService {
 
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final PasswordResetTokenRepo passwordResetTokenRepo;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final SecureRandom random = new SecureRandom();
-    private final Supplier<String> otpSupplier = () -> {
-        int otp = 100000 + random.nextInt(900000);
-        return String.valueOf(otp);
-    };
 
-    private PasswordResetToken buildPasswordResetToken(String hashedOtp, User user) {
-        return PasswordResetToken.builder()
-                .otp(hashedOtp)
-                .expiresAt(Instant.now().plus(2, ChronoUnit.MINUTES))
-                .user(user)
-                .isUsed(false)
-                .build();
+    private String generateOtp() {
+        return String.valueOf(100000 + random.nextInt(900000));
     }
 
-    private void validate(boolean condition, String message) {
-        if (condition) {
-            throw new BusinessException(message);
-        }
+    private User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    private void checkExistingActiveOtp(Optional<PasswordResetToken> tokenOptional) {
-        validate(
-                tokenOptional.isPresent()
-                        && !tokenOptional.get().isUsed()
-                        && tokenOptional.get().getExpiresAt().isAfter(Instant.now()),
-                "You already have an active OTP"
-        );
+    private PasswordResetToken getToken(User user) {
+        return passwordResetTokenRepo.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("OTP not found"));
     }
 
-    private OtpResponse getOtpResponse(String otp, PasswordResetToken savedToken) {
-        return OtpResponse.builder()
-                .otp(otp)
-                .expiry(savedToken.getExpiresAt())
-                .build();
+    private boolean isExpired(Instant expiry) {
+        return expiry.isBefore(Instant.now());
     }
 
     @Transactional
     public OtpResponse generateOtp(String email) {
         User user = getUser(email);
-        Optional<PasswordResetToken> existingToken = getByUser(user);
-        checkExistingActiveOtp(existingToken);
-        existingToken.ifPresent(passwordResetTokenRepo::delete);
-        String otp = otpSupplier.get();
+        String otp = generateOtp();
         String hashedOtp = passwordEncoder.encode(otp);
-        PasswordResetToken passwordResetToken =
-                buildPasswordResetToken(hashedOtp, user);
-        PasswordResetToken savedToken =
-                passwordResetTokenRepo.save(passwordResetToken);
-        return getOtpResponse(otp, savedToken);
-    }
 
-    private Optional<PasswordResetToken> getByUser(User user) {
-        return passwordResetTokenRepo.findByUser(user);
-    }
-
-    private @NonNull User getUser(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        PasswordResetToken token = passwordResetTokenRepo.findByUser(user)
+                .orElse(PasswordResetToken.builder().user(user).build());
+        token.setOtp(hashedOtp);
+        token.setExpiresAt(Instant.now().plus(2, ChronoUnit.MINUTES));
+        token.setUsed(false);
+        PasswordResetToken saved = passwordResetTokenRepo.save(token);
+        applicationEventPublisher.publishEvent(
+                OtpGeneratedEvent.builder()
+                        .otp(otp)
+                        .expiry(saved.getExpiresAt())
+                        .email(user.getEmail())
+                        .build()
+        );
+        return OtpResponse.builder()
+                .expiry(saved.getExpiresAt())
+                .build();
     }
 
     @Transactional
     public UserResponse verifyOtp(ChangePasswordRequest request) {
+
         User user = getUser(request.email());
-        PasswordResetToken passwordResetToken = getPasswordResetToken(user);
-        checkExpiry(passwordResetToken);
-        validate(
-                passwordResetToken.isUsed(),
-                "OTP already used"
-        );
+        PasswordResetToken token = getToken(user);
 
-        validate(
-                !passwordEncoder.matches(
-                        request.otp(),
-                        passwordResetToken.getOtp()
-                ),
-                "OTP did not match"
-        );
+        if (isExpired(token.getExpiresAt())) {
+            throw new BusinessException("OTP already expired");
+        }
+        if (token.isUsed()) {
+            throw new BusinessException("OTP already used");
+        }
 
-        validate(
-                passwordEncoder.matches(
-                        request.newPassword(),
-                        user.getPassword()
-                ),
-                "Please provide a password you have not used before"
-        );
+        if (!passwordEncoder.matches(request.otp(), token.getOtp())) {
+            throw new BusinessException("OTP did not match");
+        }
+        if (passwordEncoder.matches(request.newPassword(), user.getPassword())) {
+            throw new BusinessException("Please provide a password you have not used before");
+        }
+        token.setUsed(true);
+        passwordResetTokenRepo.save(token);
 
-        user.setPassword(
-                passwordEncoder.encode(request.newPassword())
-        );
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
 
-        passwordResetTokenRepo.delete(passwordResetToken);
-
-        return UserMapper.toResponse(
-                userRepository.save(user)
-        );
-    }
-
-    private PasswordResetToken getPasswordResetToken(User user) {
-        return passwordResetTokenRepo.findByUser(user)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("OTP not found"));
-    }
-
-    private void checkExpiry(PasswordResetToken passwordResetToken) {
-        validate(
-                isExpired(passwordResetToken.getExpiresAt()),
-                "OTP already expired"
-        );
-    }
-
-    private boolean isExpired(Instant expiry) {
-        return expiry.isBefore(Instant.now());
+        return UserMapper.toResponse(userRepository.save(user));
     }
 }
