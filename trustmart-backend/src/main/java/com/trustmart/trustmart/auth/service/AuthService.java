@@ -6,7 +6,6 @@ import com.trustmart.trustmart.auth.dto.response.LoginResponse;
 import com.trustmart.trustmart.auth.dto.response.UserResponse;
 import com.trustmart.trustmart.auth.mapper.UserMapper;
 import com.trustmart.trustmart.auth.model.UserPrinciple;
-import com.trustmart.trustmart.auth.repository.RefreshTokenService;
 import com.trustmart.trustmart.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

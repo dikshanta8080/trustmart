@@ -1,11 +1,12 @@
-package com.trustmart.trustmart.auth.repository;
+package com.trustmart.trustmart.auth.service;
 
 import com.trustmart.trustmart.auth.dto.request.RefreshTokenRequest;
 import com.trustmart.trustmart.auth.dto.response.RefreshTokenResponse;
 import com.trustmart.trustmart.auth.model.RefreshToken;
 import com.trustmart.trustmart.auth.model.User;
 import com.trustmart.trustmart.auth.model.UserPrinciple;
-import com.trustmart.trustmart.auth.service.JwtService;
+import com.trustmart.trustmart.auth.repository.RefreshTokenRepository;
+import com.trustmart.trustmart.auth.repository.UserRepository;
 import com.trustmart.trustmart.common.exceptions.BusinessException;
 import com.trustmart.trustmart.common.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
