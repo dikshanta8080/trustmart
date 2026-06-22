@@ -24,7 +24,7 @@ export default function LoginPage() {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setEmail(savedEmail);
-      setRememberMe(true);
+      setRememberMe(true);  
     }
   }, []);
 

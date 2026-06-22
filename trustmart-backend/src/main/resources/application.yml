@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: nisha
+    active: dipisha
   application:
     name: trustmart
   web:
