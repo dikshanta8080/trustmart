@@ -1,3 +1,5 @@
+// src/pages/Listings.jsx
+
 import { Package, Clock, CheckCircle, XCircle } from "lucide-react";
 import ListingTable from "../components/ListingTable";
 import { listings } from "../data/mockData";
