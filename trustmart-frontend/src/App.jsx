@@ -7,6 +7,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Wishlist from './pages/Wishlist';
+import PurchaseHistory from './pages/PurchaseHistory';
 import UserDashboard from './pages/user/UserDashboard';
 
 //  Temporary: Mock user for testing UI
@@ -41,14 +42,17 @@ function App() {
       
       <div className="max-w-7xl mx-auto px-4 mt-6">
         <div className="flex gap-6">
+          {/* Sidebar  */}
           <div className="w-64 hidden md:block flex-shrink-0">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
           
+          {/* Main Content */}
           <div className="flex-1">
             <Routes>
               <Route path="/" element={<Wishlist />} />
               <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/purchase-history" element={<PurchaseHistory />} />
               <Route path="/dashboard" element={<UserDashboard />} />
             </Routes>
           </div>

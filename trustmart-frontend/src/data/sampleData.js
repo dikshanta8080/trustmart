@@ -1,3 +1,14 @@
+// User Profile Data
+export const userProfileData = {
+  name: "Alex Johnson",
+  avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+  isVerified: true,
+  isOnline: true,
+  email: "alex.johnson@email.com",
+  memberSince: "2024"
+};
+
+// Wishlist Data 
 export const wishlistData = [
   {
     id: 1,
@@ -45,3 +56,45 @@ export const wishlistData = [
     image: "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&h=300&fit=crop"
   }
 ];
+
+// Purchase History Data 
+export const purchaseData = {
+  stats: {
+    totalSpent: "$1,798",
+    itemsBought: "8",
+    topCategory: "Electronics",
+    avgPurchase: "$225"
+  },
+  orders: [
+    {
+      id: 1,
+      name: "iPhone 15 Pro Max",
+      price: "$899",
+      seller: "Sarah Chen",
+      date: "Jun 12, 2026",
+      status: "Delivered",
+      statusColor: "bg-emerald-500",
+      image: "📱"
+    },
+    {
+      id: 2,
+      name: "Sony WH-1000XM5",
+      price: "$249",
+      seller: "David Park",
+      date: "Jun 8, 2026",
+      status: "Shipped",
+      statusColor: "bg-blue-500",
+      image: "🎧"
+    },
+    {
+      id: 3,
+      name: "Herman Miller Aeron Chair",
+      price: "$650",
+      seller: "Emily Rodriguez",
+      date: "May 28, 2026",
+      status: "Processing",
+      statusColor: "bg-amber-500",
+      image: "🪑"
+    }
+  ]
+};
