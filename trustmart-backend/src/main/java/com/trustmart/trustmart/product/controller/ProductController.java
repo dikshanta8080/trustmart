@@ -7,6 +7,12 @@ import com.trustmart.trustmart.common.dto.response.PagedResponse;
 import com.trustmart.trustmart.product.dto.request.ProductRequestDto;
 import com.trustmart.trustmart.product.dto.response.ProductResponseDto;
 import com.trustmart.trustmart.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,48 +27,104 @@ import java.util.UUID;
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
+
     private final ProductService productService;
 
+    @Operation(
+            summary = "Add product",
+            requestBody = @RequestBody(
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            encoding = {
+                                    @Encoding(name = "product", contentType = MediaType.APPLICATION_JSON_VALUE),
+                                    @Encoding(name = "images", contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                            }
+                    )
+            )
+    )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_ADD')")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct( @RequestPart("product") ProductRequestDto productRequestDto,
-                                                                       @RequestPart("images") List<MultipartFile> multipartFileList) {
-        ProductResponseDto productResponseDto = productService.addProduct(productRequestDto, multipartFileList);
-        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product created successfully"));
+    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(
+            @Valid @RequestPart("product") ProductRequestDto productRequestDto,
+            @RequestPart("images") List<MultipartFile> images
+    ) {
+
+        System.out.println("PRODUCT API HIT");
+        System.out.println(productRequestDto);
+        System.out.println("Images count: " + images.size());
+
+        ProductResponseDto productResponseDto =
+                productService.addProduct(productRequestDto, images);
+        System.out.println(productResponseDto);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(productResponseDto, "Product created successfully")
+        );
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('PRODUCT_VIEW')")
-    public ResponseEntity<ApiResponse<PagedResponse<ProductResponseDto>>> getAllProducts(@ModelAttribute PaginationRequest paginationRequest,
-                                                                                         ProductFilterRequest productFilterRequest) {
-        PagedResponse<ProductResponseDto> allProducts = productService.getAllProducts(paginationRequest.toPageable(), productFilterRequest);
-        return ResponseEntity.ok(ApiResponse.success(allProducts, "Products fetched successfully"));
+    public ResponseEntity<ApiResponse<PagedResponse<ProductResponseDto>>> getAllProducts(
+            @ModelAttribute PaginationRequest paginationRequest,
+            @ModelAttribute ProductFilterRequest productFilterRequest
+    ) {
+        PagedResponse<ProductResponseDto> allProducts =
+                productService.getAllProducts(paginationRequest.toPageable(), productFilterRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(allProducts, "Products fetched successfully")
+        );
     }
 
     @GetMapping("/{uuid}")
     @PreAuthorize("hasAuthority('PRODUCT_VIEW')")
     public ResponseEntity<ApiResponse<ProductResponseDto>> getProductById(@PathVariable UUID uuid) {
-        ProductResponseDto productResponse = productService.getProductById(uuid);
-        return ResponseEntity.ok(ApiResponse.success(productResponse, "Product fetched successfully"));
+        ProductResponseDto productResponse =
+                productService.getProductById(uuid);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(productResponse, "Product fetched successfully")
+        );
     }
 
-    @PutMapping(value = "/{uuid}",
-    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(
+            summary = "Update product",
+            requestBody = @RequestBody(
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            encoding = {
+                                    @Encoding(name = "product", contentType = MediaType.APPLICATION_JSON_VALUE),
+                                    @Encoding(name = "images", contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                            }
+                    )
+            )
+    )
+    @PutMapping(value = "/{uuid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@PathVariable UUID uuid,
-                                                                         @RequestPart("product") ProductRequestDto productRequestDto,
-                                                                         @RequestPart(value = "images", required = false)
-                                                                         List<MultipartFile> images) {
-        ProductResponseDto productResponseDto = productService.updateProduct(uuid, productRequestDto, images);
-        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product updated successfully"));
+    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(
+            @PathVariable UUID uuid,
+            @Valid @RequestPart("product") ProductRequestDto productRequestDto,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
+    ) {
+        ProductResponseDto productResponseDto =
+                productService.updateProduct(uuid, productRequestDto, images);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(productResponseDto, "Product updated successfully")
+        );
     }
 
     @DeleteMapping("/{uuid}")
     @PreAuthorize("hasAuthority('PRODUCT_DELETE')")
     public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable UUID uuid) {
         productService.deleteProduct(uuid);
+
         return ResponseEntity.ok(
-                ApiResponse.<String>success(null, "Product deleted successfully")
+                ApiResponse.success(null, "Product deleted successfully")
         );
     }
+
+
+
+
 }
