@@ -4,11 +4,12 @@ import {
   CubeIcon, 
   TagIcon, 
   ChartBarIcon,
-  EyeIcon,
+  ClockIcon,
   ArrowPathIcon 
 } from "@heroicons/react/24/outline";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+
 
 function PurchaseHistory() {
   const { stats, orders } = purchaseData;
@@ -21,11 +22,14 @@ function PurchaseHistory() {
   ];
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header */}
+    <div>
+      {/* Header with Icon */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Purchase History</h1>
-        <p className="text-sm text-gray-500">Sold by Sarah Chen • Jun 12, 2026</p>
+        <div className="flex items-center gap-3">
+          <ClockIcon className="w-7 h-7 text-blue-500" />
+          <h1 className="text-2xl font-bold text-gray-900">Purchase History</h1>
+        </div>
+        <p className="text-sm text-gray-500 mt-1">Sold by Sarah Chen • Jun 12, 2026</p>
       </div>
 
       {/* Stats Cards */}
@@ -85,10 +89,6 @@ function PurchaseHistory() {
             <div className="flex flex-col items-end gap-2 flex-shrink-0">
               <p className="text-lg font-bold text-gray-900">{order.price}</p>
               <div className="flex gap-2">
-                <button className="px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-1">
-                  <EyeIcon className="w-4 h-4" />
-                  View Order
-                </button>
                 <button className="px-4 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-1">
                   <ArrowPathIcon className="w-4 h-4" />
                   Buy Again
