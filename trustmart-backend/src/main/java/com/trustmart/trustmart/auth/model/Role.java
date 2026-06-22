@@ -16,7 +16,8 @@ public enum Role {
             Permission.ALL_USER_VIEW,
             Permission.USER_UPDATE,
             Permission.USER_DELETE,
-            Permission.PROFILE_UPDATE
+            Permission.PROFILE_UPDATE,
+            Permission.CATEGORY_VIEW
 
     )), USER(Set.of(
             Permission.PRODUCT_ADD,
