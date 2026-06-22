@@ -4,6 +4,8 @@ import {
   Squares2X2Icon,
   ShoppingBagIcon,
   ClockIcon,
+  ShoppingCartIcon,
+  ChartBarIcon,
   StarIcon,
   Cog6ToothIcon
 } from '@heroicons/react/24/outline';
@@ -53,11 +55,11 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
       <nav className="bg-white rounded-xl shadow-sm p-2">
         {[
           { icon: Squares2X2Icon, label: 'Overview', id: 'overview' },
-          { icon: ShoppingBagIcon, label: 'My Listings', id: 'listings' },
-          { icon: ClockIcon, label: 'My Orders', id: 'orders' },
+          { icon: ShoppingCartIcon, label: 'Cart', id: 'listings' },
+          { icon: ShoppingBagIcon, label: 'My Orders', id: 'orders' },
           { icon: HeartIcon, label: 'Wishlist', id: 'wishlist', active: true },
-          { icon: StarIcon, label: 'Purchase History', id: 'purchases' },
-          { icon: StarIcon, label: 'Sales History', id: 'sales' },
+          { icon: ClockIcon, label: 'Purchase History', id: 'purchases' },
+          { icon: ChartBarIcon, label: 'Sales History', id: 'sales' },
           { icon: StarIcon, label: 'Reviews', id: 'reviews' },
           { icon: Cog6ToothIcon, label: 'Settings', id: 'settings' }
         ].map((item) => (

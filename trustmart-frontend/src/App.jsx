@@ -4,9 +4,11 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Wishlist from './pages/Wishlist';
 
+
+
 function App() {
-  // ✅ Active tab manage garne
-  const [activeTab, setActiveTab] = useState('wishlist');
+  // Manage Active tab
+   const [activeTab, setActiveTab] = useState('wishlist');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -31,5 +33,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
