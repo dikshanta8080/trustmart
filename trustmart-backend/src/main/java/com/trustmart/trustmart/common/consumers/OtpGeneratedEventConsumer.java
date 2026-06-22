@@ -1,6 +1,6 @@
 package com.trustmart.trustmart.common.consumers;
 
-import com.trustmart.trustmart.common.events.OtpGeneratedEvent;
+import com.trustmart.trustmart.common.events.kafka.OtpGeneratedEvent;
 import com.trustmart.trustmart.common.helpers.KafkaTopics;
 import com.trustmart.trustmart.common.service.NotificationService;
 import lombok.RequiredArgsConstructor;

@@ -8,7 +8,7 @@ import com.trustmart.trustmart.auth.model.PasswordResetToken;
 import com.trustmart.trustmart.auth.model.User;
 import com.trustmart.trustmart.auth.repository.PasswordResetTokenRepo;
 import com.trustmart.trustmart.auth.repository.UserRepository;
-import com.trustmart.trustmart.common.events.OtpGeneratedEvent;
+import com.trustmart.trustmart.common.events.kafka.OtpGeneratedEvent;
 import com.trustmart.trustmart.common.exceptions.BusinessException;
 import com.trustmart.trustmart.common.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;

@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/health/**",
                                 "/uploads/**",
-                                "/ws/**"
+                                "/ws/**",
+                                "/users/**"
                         )
                         .permitAll().anyRequest().authenticated())
 

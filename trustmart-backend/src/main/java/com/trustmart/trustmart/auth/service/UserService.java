@@ -91,4 +91,10 @@ public class UserService {
         return UserMapper.toResponse(userRepository.save(user));
 
     }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUser(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return UserMapper.toResponse(user);
+    }
 }

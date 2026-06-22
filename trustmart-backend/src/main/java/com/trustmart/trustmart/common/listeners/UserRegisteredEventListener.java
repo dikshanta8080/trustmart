@@ -1,8 +1,7 @@
 package com.trustmart.trustmart.common.listeners;
 
-import com.trustmart.trustmart.common.events.UserRegisteredEvent;
+import com.trustmart.trustmart.common.events.kafka.UserRegisteredEvent;
 import com.trustmart.trustmart.common.helpers.KafkaTopics;
-import com.trustmart.trustmart.common.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

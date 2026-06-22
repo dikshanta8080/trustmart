@@ -20,7 +20,7 @@ import java.util.UUID;
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasAuthority('ALL_USER_VIEW')")
+    //    @PreAuthorize("hasAuthority('ALL_USER_VIEW')")
     @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<UserResponse>>> getUsers(
             @ModelAttribute PaginationRequest request,
@@ -37,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok().body(ApiResponse.success("User deleted", "Deletion Completed"));
     }
 
-    @PreAuthorize("hasAuthority('USER_VIEW')")
+    //    @PreAuthorize("hasAuthority('USER_VIEW')")
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserResponse>> getProfile() {
         UserResponse userProfile = userService.getUserProfile();
@@ -49,5 +49,13 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserResponse>> updateProfileImage(@RequestPart MultipartFile multipartFile) {
         UserResponse userResponse = userService.addProfileImage(multipartFile);
         return ResponseEntity.ok().body(ApiResponse.success(userResponse, "Profile updated successfully"));
+    }
+
+    //    @PreAuthorize("hasAuthority('USER_VIEW')")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> getUser(@PathVariable UUID id) {
+        UserResponse user = userService.getUser(id);
+        return ResponseEntity.ok(ApiResponse.success(user, "User fetched successfully"));
+
     }
 }
