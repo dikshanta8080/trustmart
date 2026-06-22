@@ -38,4 +38,42 @@ const UserTable = () => {
       )
     );
   };
-}
+
+  const handleVerify = (id) => {
+    setData((prev) =>
+      prev.map((u) =>
+        u.id === id ? { ...u, verified: true, status: "active" } : u
+      )
+    );
+  };
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl">
+
+      {/* Filter bar */}
+      <div className="p-4 border-b border-gray-100 flex items-center gap-3">
+        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 flex-1">
+          <Search size={14} className="text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-transparent text-sm text-gray-700 outline-none w-full placeholder-gray-400"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none bg-white"
+        >
+          <option value="all">All statuses</option>
+          <option value="active">Active</option>
+          <option value="flagged">Flagged</option>
+          <option value="suspended">Suspended</option>
+          <option value="unverified">Unverified</option>
+        </select>
+        <button className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+          ↓ Export
+        </button>
+      </div>

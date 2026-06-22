@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prakash
+    active: dipisha
   application:
     name: trustmart
 server:
@@ -19,3 +19,7 @@ app:
     email: dikshantaacharya04@gmail.com
     password: root
     address: Itahari 17
+
+kafka:
+  bootstrap-servers: localhost:9092
+file.upload-dir: uploads
