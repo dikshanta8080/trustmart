@@ -2,11 +2,10 @@ package com.trustmart.trustmart;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication (exclude = SecurityAutoConfiguration.class)
+@SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableAsync
 public class TrustmartApplication {

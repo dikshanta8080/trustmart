@@ -40,7 +40,7 @@ public class Product extends BaseEntity {
     private ProductStatus status;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ImageData> imageData = new ArrayList<>();
 
