@@ -77,3 +77,125 @@ const UserTable = () => {
           ↓ Export
         </button>
       </div>
+       {/* Table */}
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+          <span className="text-4xl mb-3">📭</span>
+          <p className="text-sm font-medium">No users found</p>
+          <p className="text-xs mt-1">Try adjusting your search or filter</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">User</th>
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Email</th>
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Joined</th>
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Listings</th>
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Rating</th>
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Status</th>
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Verified</th>
+                <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((user, i) => (
+                <tr key={user.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+
+                  {/* Avatar + name */}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${avatarColor[i % avatarColor.length]}`}>
+                        {user.avatar}
+                      </div>
+                      <span className="text-sm font-medium text-gray-800">{user.name}</span>
+                    </div>
+                  </td>
+
+                  {/* Email */}
+                  <td className="px-4 py-3 text-sm text-gray-500">{user.email}</td>
+
+                  {/* Joined */}
+                  <td className="px-4 py-3 text-sm text-gray-500">{user.joined}</td>
+
+                  {/* Listings */}
+                  <td className="px-4 py-3 text-sm text-gray-700">{user.listings}</td>
+
+                  {/* Rating */}
+                  <td className="px-4 py-3">
+                    {user.rating ? (
+                      <span className="text-sm text-gray-700">⭐ {user.rating}</span>
+                    ) : (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-4 py-3">
+                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${statusPill[user.status]}`}>
+                      {user.status}
+                    </span>
+                  </td>
+
+                  {/* Verified */}
+                  <td className="px-4 py-3">
+                    {user.verified ? (
+                      <span className="flex items-center gap-1 text-xs text-green-600">
+                        <CheckCircle size={13} /> Verified
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400">Unverified</span>
+                    )}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="View">
+                        <Eye size={14} className="text-gray-500" />
+                      </button>
+                      {!user.verified && (
+                        <button
+                          onClick={() => handleVerify(user.id)}
+                          className="p-1.5 hover:bg-green-50 rounded-lg transition-colors"
+                          title="Verify"
+                        >
+                          <CheckCircle size={14} className="text-green-500" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleSuspend(user.id)}
+                        className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
+                        title={user.status === "suspended" ? "Restore" : "Suspend"}
+                      >
+                        {user.status === "suspended"
+                          ? <Shield size={14} className="text-green-500" />
+                          : <ShieldOff size={14} className="text-red-400" />
+                        }
+                      </button>
+                    </div>
+                  </td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+        <p className="text-xs text-gray-400">Showing {filtered.length} of {data.length} users</p>
+        <div className="flex items-center gap-1">
+          <button className="px-2.5 py-1 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-500">← Prev</button>
+          <button className="px-2.5 py-1 text-xs bg-indigo-600 text-white rounded-lg">1</button>
+          <button className="px-2.5 py-1 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-500">Next →</button>
+        </div>
+      </div>
+
+    </div>
+  );
+};
+
+export default UserTable;
