@@ -18,6 +18,9 @@ public enum Role {
             Permission.USER_DELETE,
             Permission.PROFILE_UPDATE,
             Permission.CATEGORY_VIEW
+            Permission.CATEGORY_ADD,
+            Permission.CATEGORY_UPDATE,
+            Permission.CATEGORY_DELETE
 
     )), USER(Set.of(
             Permission.PRODUCT_ADD,
@@ -25,7 +28,9 @@ public enum Role {
             Permission.PRODUCT_UPDATE,
             Permission.USER_VIEW,
             Permission.USER_UPDATE,
-            Permission.PROFILE_UPDATE
+            Permission.PROFILE_UPDATE,
+            Permission.CATEGORY_VIEW,
+            Permission.CATEGORY_ADD
     ));
 
     private final Set<Permission> permissions;
