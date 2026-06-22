@@ -36,6 +36,7 @@ const stats = [
     sub: "Needs review",
   },
 ];
+
 const Users = () => {
   return (
     <div className="space-y-5">
@@ -69,6 +70,10 @@ const Users = () => {
           );
         })}
       </div>
+
+      {/* Table */}
+      <UserTable />
+
     </div>
   );
 };
