@@ -36,3 +36,46 @@ const stats = [
     sub: "Removed listings",
   },
 ];
+
+const Listings = () => {
+  return (
+    <div className="space-y-5">
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-900">Listing Moderation</h1>
+          <p className="text-xs text-gray-400 mt-0.5">Review and manage all product listings</p>
+        </div>
+        <span className="text-xs bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full font-medium">
+          {listings.filter((l) => l.status === "pending").length} pending approval
+        </span>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-4 gap-4">
+        {stats.map((s, i) => {
+          const Icon = s.icon;
+          return (
+            <div key={i} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-sm transition-shadow">
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center`}>
+                  <Icon size={15} className={s.iconColor} />
+                </div>
+                <p className="text-xs text-gray-500">{s.label}</p>
+              </div>
+              <p className="text-2xl font-semibold text-gray-900">{s.value}</p>
+              <p className="text-xs text-gray-400 mt-1">{s.sub}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Table */}
+      <ListingTable />
+
+    </div>
+  );
+};
+
+export default Listings;
