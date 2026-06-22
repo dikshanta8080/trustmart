@@ -30,6 +30,11 @@ const UserApp = () => {
     window.location.href = '/login';
   };
 
+
+function App() {
+  // Manage Active tab
+   const [activeTab, setActiveTab] = useState('wishlist');
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header user={currentUser} onLogout={handleLogout} />
@@ -68,5 +73,6 @@ const App = () => {
     </AuthProvider>
   );
 };
+
 
 export default App;

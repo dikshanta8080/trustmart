@@ -1,16 +1,20 @@
 package com.trustmart.trustmart.product.controller;
 
 import com.trustmart.trustmart.common.dto.request.PaginationRequest;
+import com.trustmart.trustmart.common.dto.request.ProductFilterRequest;
 import com.trustmart.trustmart.common.dto.response.ApiResponse;
 import com.trustmart.trustmart.common.dto.response.PagedResponse;
 import com.trustmart.trustmart.product.dto.request.ProductRequestDto;
 import com.trustmart.trustmart.product.dto.response.ProductResponseDto;
 import com.trustmart.trustmart.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,17 +23,18 @@ import java.util.UUID;
 public class ProductController {
     private final ProductService productService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_ADD')")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@RequestBody ProductRequestDto productRequestDto) {
-        ProductResponseDto productResponseDto = productService.addProduct(productRequestDto);
+    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@RequestBody ProductRequestDto productRequestDto, @RequestPart List<MultipartFile> multipartFileList) {
+        ProductResponseDto productResponseDto = productService.addProduct(productRequestDto, multipartFileList);
         return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product created successfully"));
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('PRODUCT_VIEW')")
-    public ResponseEntity<ApiResponse<PagedResponse<ProductResponseDto>>> getAllProducts(@ModelAttribute PaginationRequest paginationRequest) {
-        PagedResponse<ProductResponseDto> allProducts = productService.getAllProducts(paginationRequest.toPageable());
+    public ResponseEntity<ApiResponse<PagedResponse<ProductResponseDto>>> getAllProducts(@ModelAttribute PaginationRequest paginationRequest,
+                                                                                         ProductFilterRequest productFilterRequest) {
+        PagedResponse<ProductResponseDto> allProducts = productService.getAllProducts(paginationRequest.toPageable(), productFilterRequest);
         return ResponseEntity.ok(ApiResponse.success(allProducts, "Products fetched successfully"));
     }
 

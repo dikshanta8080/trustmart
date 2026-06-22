@@ -1,5 +1,6 @@
 package com.trustmart.trustmart.product.mapper;
 
+import com.trustmart.trustmart.common.dto.response.ImageDataResponse;
 import com.trustmart.trustmart.product.dto.request.ProductRequestDto;
 import com.trustmart.trustmart.product.dto.response.ProductResponseDto;
 import com.trustmart.trustmart.product.model.Product;
@@ -12,7 +13,6 @@ public class ProductMapper {
                 .status(productRequestDto.status())
                 .condition(productRequestDto.condition())
                 .description(productRequestDto.description())
-                .imageUrl(productRequestDto.imageUrl())
                 .location(productRequestDto.location())
                 .build();
     }
@@ -24,10 +24,18 @@ public class ProductMapper {
                 .status(product.getStatus())
                 .location(product.getLocation())
                 .price(product.getPrice())
-                .imageUrl(product.getImageUrl())
                 .description(product.getDescription())
                 .condition(product.getCondition())
+                .images(
+                        product.getImageData()
+                                .stream()
+                                .map(image -> ImageDataResponse.builder()
+                                        .imageId(image.getId())
+                                        .name(image.getOriginalName())
+                                        .imagePath("/uploads/" + image.getFileName())
+                                        .build())
+                                .toList()
+                )
                 .build();
-
     }
 }
