@@ -1,4 +1,4 @@
-package com.trustmart.trustmart.common.events;
+package com.trustmart.trustmart.common.events.kafka;
 
 import lombok.Builder;
 
