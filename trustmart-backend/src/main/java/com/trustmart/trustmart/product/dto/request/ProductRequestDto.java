@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Builder
 public record ProductRequestDto(
@@ -30,6 +31,9 @@ public record ProductRequestDto(
         ProductStatus status,
 
         @NotBlank(message = "Image Url is required")
-        String imageUrl
+        String imageUrl,
+
+        @NotNull(message = "Category Id is required")
+        UUID categoryId
 ) {
 }
