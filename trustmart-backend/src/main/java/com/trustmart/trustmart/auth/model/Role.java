@@ -17,6 +17,7 @@ public enum Role {
             Permission.USER_UPDATE,
             Permission.USER_DELETE,
             Permission.PROFILE_UPDATE,
+            Permission.CATEGORY_VIEW
             Permission.CATEGORY_ADD,
             Permission.CATEGORY_UPDATE,
             Permission.CATEGORY_DELETE

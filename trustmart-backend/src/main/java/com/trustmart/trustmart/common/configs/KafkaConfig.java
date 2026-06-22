@@ -1,6 +1,6 @@
 package com.trustmart.trustmart.common.configs;
 
-import com.trustmart.trustmart.common.events.UserRegisteredEvent;
+import com.trustmart.trustmart.common.events.kafka.UserRegisteredEvent;
 import com.trustmart.trustmart.common.helpers.KafkaTopics;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;

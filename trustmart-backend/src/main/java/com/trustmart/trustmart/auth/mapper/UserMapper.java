@@ -19,14 +19,15 @@ public class UserMapper {
                 .build();
     }
 
-    public static LoginResponse toLoginResponse(User user, String jwt) {
+    public static LoginResponse toLoginResponse(User user, String jwt, String refreshToken) {
         return LoginResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .address(user.getAddress())
                 .email(user.getEmail())
-                .token(jwt)
+                .tokenResponse(LoginResponse.TokenResponse.builder().accessToken(jwt).refreshToken(refreshToken).build())
                 .role(user.getRole())
+                .imageDataResponse(getImageData(user))
                 .build();
     }
 
