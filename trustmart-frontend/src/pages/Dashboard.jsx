@@ -1,5 +1,3 @@
-// src/pages/Dashboard.jsx
-
 import { useState } from "react";
 import { Users, Package, CreditCard, Flag, ArrowUpRight, ArrowDownRight, ShieldAlert, CheckCircle, Clock, AlertTriangle, Plus, FileCheck, BarChart2 } from "lucide-react";
 import { WeeklyUsersChart, CategoryPieChart } from "../components/Charts";

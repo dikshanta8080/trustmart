@@ -13,7 +13,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");      
   const [password, setPassword] = useState(""); 
   const [confirmPassword, setConfirmPassword] = useState("");
-  
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   
@@ -25,7 +24,7 @@ export default function LoginPage() {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setEmail(savedEmail);
-      setRememberMe(true);
+      setRememberMe(true);  
     }
   }, []);
 
