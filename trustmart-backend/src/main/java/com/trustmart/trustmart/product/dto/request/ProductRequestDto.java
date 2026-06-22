@@ -30,9 +30,6 @@ public record ProductRequestDto(
         @NotNull(message = "Status is required")
         ProductStatus status,
 
-        @NotBlank(message = "Image Url is required")
-        String imageUrl,
-
         @NotNull(message = "Category Id is required")
         UUID categoryId
 ) {

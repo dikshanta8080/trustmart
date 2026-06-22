@@ -25,7 +25,8 @@ public class ProductController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_ADD')")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@RequestBody ProductRequestDto productRequestDto, @RequestPart List<MultipartFile> multipartFileList) {
+    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct( @RequestPart("product") ProductRequestDto productRequestDto,
+                                                                       @RequestPart("images") List<MultipartFile> multipartFileList) {
         ProductResponseDto productResponseDto = productService.addProduct(productRequestDto, multipartFileList);
         return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product created successfully"));
     }
@@ -45,11 +46,14 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.success(productResponse, "Product fetched successfully"));
     }
 
-    @PutMapping("/{uuid}")
+    @PutMapping(value = "/{uuid}",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
     public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@PathVariable UUID uuid,
-                                                                         @RequestBody ProductRequestDto productRequestDto) {
-        ProductResponseDto productResponseDto = productService.updateProduct(uuid, productRequestDto);
+                                                                         @RequestPart("product") ProductRequestDto productRequestDto,
+                                                                         @RequestPart(value = "images", required = false)
+                                                                         List<MultipartFile> images) {
+        ProductResponseDto productResponseDto = productService.updateProduct(uuid, productRequestDto, images);
         return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product updated successfully"));
     }
 
