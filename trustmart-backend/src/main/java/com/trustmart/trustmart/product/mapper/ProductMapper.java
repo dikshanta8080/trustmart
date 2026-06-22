@@ -6,7 +6,8 @@ import com.trustmart.trustmart.product.dto.response.ProductResponseDto;
 import com.trustmart.trustmart.product.model.Product;
 
 public class ProductMapper {
-    public static Product toEntity(ProductRequestDto productRequestDto){
+
+    public static Product toEntity(ProductRequestDto productRequestDto) {
         return Product.builder()
                 .title(productRequestDto.title())
                 .price(productRequestDto.price())
@@ -17,7 +18,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public static ProductResponseDto toResponse(Product product){
+    public static ProductResponseDto toResponse(Product product) {
         return ProductResponseDto.builder()
                 .id(product.getId())
                 .title(product.getTitle())
@@ -31,9 +32,10 @@ public class ProductMapper {
                                 .stream()
                                 .map(image -> ImageDataResponse.builder()
                                         .imageId(image.getId())
-                                        .name(image.getOriginalName())
-                                        .imagePath("/uploads/" + image.getFileName())
-                                        .build())
+                                        .name(image.getFileName())
+                                        .imagePath("http://localhost:8080/api/v1/uploads/" + image.getFileName())
+                                        .build()
+                                )
                                 .toList()
                 )
                 .build();
