@@ -1,16 +1,16 @@
 package com.trustmart.trustmart.product.model;
 
 import com.trustmart.trustmart.common.model.BaseEntity;
+import com.trustmart.trustmart.common.model.ImageData;
 import com.trustmart.trustmart.product.enums.ProductCondition;
 import com.trustmart.trustmart.product.enums.ProductStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -39,10 +39,27 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    @Column(nullable = false, unique = true)
-    private String imageUrl;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ImageData> imageData = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+
+    public void addImageData(ImageData imageData){
+        this.imageData.add(imageData);
+        imageData.setProduct(this);
+    }
+
+    public void removeImageData(ImageData imageData){
+        this.imageData.remove(imageData);
+        imageData.setProduct(null);
+    }
+
+
+
+
 }

@@ -1,6 +1,9 @@
 package com.trustmart.trustmart.common.model;
 
+import com.trustmart.trustmart.product.model.Product;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Entity
@@ -19,4 +22,9 @@ public class ImageData extends BaseEntity {
     private String contentType;
 
     private Long size;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
 }
