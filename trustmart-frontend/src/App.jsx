@@ -3,12 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Wishlist from './pages/Wishlist';
-import PurchaseHistory from './pages/PurchaseHistory';
+
 
 
 function App() {
   // Manage Active tab
-  const [activeTab, setActiveTab] = useState('purchases');
+   const [activeTab, setActiveTab] = useState('wishlist');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -24,8 +24,7 @@ function App() {
           {/* Main Content - Right */}
           <div className="flex-1">
             <Routes>
-              <Route path="/" element={<PurchaseHistory />} />
-              <Route path="/purchases" element={<PurchaseHistory />} />
+              <Route path="/" element={<Wishlist />} />
               <Route path="/wishlist" element={<Wishlist />} />
             </Routes>
           </div>
@@ -34,5 +33,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
