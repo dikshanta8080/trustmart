@@ -23,4 +23,13 @@ public class KafkaTopicConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic otpGeneratedTopic() {
+        return TopicBuilder
+                .name(KafkaTopics.OTP_GENERATED_TOPIC)
+                .partitions(2)
+                .replicas(1)
+                .build();
+    }
 }

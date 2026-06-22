@@ -6,7 +6,6 @@ import java.time.Instant;
 
 @Builder
 public record OtpResponse(
-        String otp,
         Instant expiry
 ) {
 }

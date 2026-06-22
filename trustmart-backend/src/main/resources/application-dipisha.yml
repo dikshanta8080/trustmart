@@ -1,19 +1,12 @@
-server:
-  port: 8081
-
-kafka:
-  bootstrap-servers: localhost:9092
-
 spring:
   mail:
-    host: smtp.gmail.com
     port: 587
-    username: defaultexample@gmail.com
-    password: xxxxx xxxxx xxxxx xxxxx
+    username: dikshantaacharya04@gmail.com
+    password: lhfz qiuy qhzv houl
+    host: smtp.gmail.com
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
-
   datasource:
     url: jdbc:postgresql://localhost:5432/trustmart
     username: postgres
@@ -38,6 +31,3 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-
-file:
-  upload-dir: uploads
