@@ -1,7 +1,7 @@
 package com.trustmart.trustmart.common.service;
 
-import com.trustmart.trustmart.common.events.OtpGeneratedEvent;
-import com.trustmart.trustmart.common.events.UserRegisteredEvent;
+import com.trustmart.trustmart.common.events.kafka.OtpGeneratedEvent;
+import com.trustmart.trustmart.common.events.kafka.UserRegisteredEvent;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

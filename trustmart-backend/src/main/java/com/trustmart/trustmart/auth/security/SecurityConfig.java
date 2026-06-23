@@ -1,7 +1,6 @@
 package com.trustmart.trustmart.auth.security;
 
 import com.trustmart.trustmart.auth.filter.JwtFilter;
-import com.trustmart.trustmart.auth.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-    private final CustomUserDetailService customUserDetailService;
+    private final UserDetailsService customUserDetailService;
     private final JwtFilter jwtFilter;
     private final CustomAuthEntryPoint authEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/health/**",
                                 "/uploads/**",
-                                "/ws/**"
+                                "/ws/**",
+                                "/users/**"
                         )
                         .permitAll().anyRequest().authenticated())
 

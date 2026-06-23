@@ -33,7 +33,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ImageUploadService imageUploadService;
-    private final ImageDataRepository imageDataRepository;
 
     @Transactional
     public ProductResponseDto addProduct(ProductRequestDto productRequestDto, List<MultipartFile> multipartFileList){
@@ -61,7 +60,8 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto updateProduct(UUID uuid,
-                                            ProductRequestDto productRequestDto){
+                                            ProductRequestDto productRequestDto,
+                                            List<MultipartFile> images){
         Product product = productRepository.findById(uuid).orElseThrow(()-> new RuntimeException("Product not found"));
         if(productRequestDto.description() != null){
             product.setDescription(productRequestDto.description());
@@ -71,13 +71,29 @@ public class ProductService {
         }
 
         if(productRequestDto.categoryId() != null){
-
-            Category category = categoryRepository
-                    .findById(productRequestDto.categoryId())
-                    .orElseThrow(() ->
-                            new RuntimeException("Category not found"));
-
+            Category category = categoryRepository.findById(productRequestDto.categoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
             product.setCategory(category);
+        }
+
+        if(productRequestDto.price() != null){
+            product.setPrice(productRequestDto.price());
+        }
+
+        if(productRequestDto.condition() != null){
+            product.setCondition(productRequestDto.condition());
+        }
+
+        if(productRequestDto.location() != null){
+            product.setLocation(productRequestDto.location());
+        }
+
+        if(productRequestDto.status() != null){
+            product.setStatus(productRequestDto.status());
+        }
+
+        if(images != null && !images.isEmpty()){
+            product.getImageData().clear();
+            images.forEach(file -> product.addImageData( imageUploadService.save(file)));
         }
         Product savedProduct = productRepository.save(product);
         return ProductMapper.toResponse(savedProduct);
@@ -90,31 +106,4 @@ public class ProductService {
             throw new IllegalArgumentException("Product not found");
         }
     }
-
-    @Transactional
-    public ProductResponseDto markSold(UUID uuid){
-        Product product = productRepository.findById(uuid)
-                .orElseThrow();
-
-        product.setStatus(ProductStatus.SOLD);
-
-        return ProductMapper.toResponse(
-                productRepository.save(product)
-        );
-    }
-
-    @Transactional
-    public ProductResponseDto markAvailable(UUID uuid){
-        Product product = productRepository.findById(uuid)
-                .orElseThrow();
-
-        product.setStatus(ProductStatus.AVAILABLE);
-
-        return ProductMapper.toResponse(
-                productRepository.save(product)
-        );
-    }
-
-
-
 }
