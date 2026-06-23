@@ -32,6 +32,10 @@ public enum Permission {
 
     WISHLIST_ADD,
     WISHLIST_VIEW,
-    WISHLIST_REMOVE;
+    WISHLIST_REMOVE,
+
+    REVIEW_CREATE,
+    REVIEW_VIEW,
+    REVIEW_DELETE;
 
 }
