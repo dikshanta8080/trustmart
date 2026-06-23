@@ -28,6 +28,10 @@ public enum Permission {
     ORDER_ACCEPT,
     ORDER_REJECT,
     ORDER_CANCEL,
-    ORDER_COMPLETE;
+    ORDER_COMPLETE,
+
+    WISHLIST_ADD,
+    WISHLIST_VIEW,
+    WISHLIST_REMOVE;
 
 }
