@@ -2,6 +2,7 @@ package com.trustmart.trustmart.common.consumers;
 
 import com.trustmart.trustmart.common.events.kafka.UserRegisteredEvent;
 import com.trustmart.trustmart.common.helpers.KafkaTopics;
+import com.trustmart.trustmart.common.helpers.WebSocketTopics;
 import com.trustmart.trustmart.common.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -31,6 +32,6 @@ public class UserRegisteredEventConsumer {
             containerFactory = "listenerContainerFactory"
     )
     public void updateUsersInFrontend(@Payload UserRegisteredEvent event) {
-        messagingTemplate.convertAndSend("/topic/user-add", event.id());
+        messagingTemplate.convertAndSend("/topic/" + WebSocketTopics.USER_ADD, event.id());
     }
 }

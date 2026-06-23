@@ -28,15 +28,12 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
         if (accessor == null) return message;
-
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-
             String authHeader = accessor.getFirstNativeHeader("Authorization");
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 throw new IllegalArgumentException("Missing token");
             }
-
             String token = authHeader.substring(7);
 
             String username = jwtService.extractUsername(token);

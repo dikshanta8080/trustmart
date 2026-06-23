@@ -25,8 +25,8 @@ public class ProductController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_ADD')")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct( @RequestPart("product") ProductRequestDto productRequestDto,
-                                                                       @RequestPart("images") List<MultipartFile> multipartFileList) {
+    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@RequestPart("product") ProductRequestDto productRequestDto,
+                                                                      @RequestPart("images") List<MultipartFile> multipartFileList) {
         ProductResponseDto productResponseDto = productService.addProduct(productRequestDto, multipartFileList);
         return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product created successfully"));
     }
@@ -47,7 +47,7 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{uuid}",
-    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
     public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@PathVariable UUID uuid,
                                                                          @RequestPart("product") ProductRequestDto productRequestDto,
@@ -62,7 +62,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable UUID uuid) {
         productService.deleteProduct(uuid);
         return ResponseEntity.ok(
-                ApiResponse.<String>success(null, "Product deleted successfully")
+                ApiResponse.success(null, "Product deleted successfully")
         );
     }
 }
