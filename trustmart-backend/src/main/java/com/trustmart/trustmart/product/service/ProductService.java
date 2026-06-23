@@ -1,5 +1,8 @@
 package com.trustmart.trustmart.product.service;
 
+import com.trustmart.trustmart.auth.model.User;
+import com.trustmart.trustmart.auth.model.UserPrinciple;
+import com.trustmart.trustmart.auth.repository.UserRepository;
 import com.trustmart.trustmart.common.dto.request.ProductFilterRequest;
 import com.trustmart.trustmart.common.dto.response.ImageDataResponse;
 import com.trustmart.trustmart.common.dto.response.PagedResponse;
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,12 +37,27 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ImageUploadService imageUploadService;
+    private final UserRepository userRepository;
+
+    private User getCurrentUser() {
+        UserPrinciple userPrinciple =
+                (UserPrinciple) SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+
+        return userRepository.findById(userPrinciple.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
     @Transactional
     public ProductResponseDto addProduct(ProductRequestDto productRequestDto, List<MultipartFile> multipartFileList){
+        User seller = getCurrentUser();
+
         Category category = categoryRepository.findById(productRequestDto.categoryId()).orElseThrow(()->new RuntimeException("Category not found"));
         Product product = ProductMapper.toEntity(productRequestDto);
         product.setCategory(category);
+        product.setSeller(seller);
         multipartFileList.forEach(file->product.addImageData(imageUploadService.save(file)));
         Product savedProduct = productRepository.save(product);
         return ProductMapper.toResponse(savedProduct);
