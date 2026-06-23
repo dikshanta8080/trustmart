@@ -29,7 +29,10 @@ public enum Role {
             Permission.ORDER_COMPLETE,
             Permission.WISHLIST_ADD,
             Permission.WISHLIST_VIEW,
-            Permission.WISHLIST_REMOVE
+            Permission.WISHLIST_REMOVE,
+            Permission.REVIEW_CREATE,
+            Permission.REVIEW_VIEW,
+            Permission.REVIEW_DELETE
 
     )), USER(Set.of(
             Permission.PRODUCT_ADD,
@@ -48,7 +51,10 @@ public enum Role {
             Permission.ORDER_COMPLETE,
             Permission.WISHLIST_ADD,
             Permission.WISHLIST_VIEW,
-            Permission.WISHLIST_REMOVE
+            Permission.WISHLIST_REMOVE,
+            Permission.REVIEW_CREATE,
+            Permission.REVIEW_VIEW,
+            Permission.REVIEW_DELETE
     ));
 
     private final Set<Permission> permissions;
