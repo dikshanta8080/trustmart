@@ -1,4 +1,6 @@
 package com.trustmart.trustmart.common.helpers;
 
 public interface WebSocketTopics {
+    String USER_ADD = "user-add";
+    String MESSAGE_SAVED = "message-saved";
 }
