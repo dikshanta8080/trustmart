@@ -1,8 +1,7 @@
+import NotificationsPage from "./pages/NotificationsPage";
+
 function App() {
-  return (
-    <BrowserRouter>
-      <h1> Hello world</h1>
-    </BrowserRouter>
-  );
+  return <NotificationsPage />;
 }
+
 export default App;
