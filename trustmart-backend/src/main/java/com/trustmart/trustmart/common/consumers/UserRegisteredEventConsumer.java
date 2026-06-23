@@ -16,7 +16,6 @@ public class UserRegisteredEventConsumer {
     private final NotificationService notificationService;
     private final SimpMessagingTemplate messagingTemplate;
 
-
     @KafkaListener(
             topics = KafkaTopics.USER_REGISTERED_TOPIC,
             groupId = "notification-group",
