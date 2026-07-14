@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import AdminRoutes from "./routes/AdminRoutes";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./routes/ProtectedRoute";
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Wishlist from './pages/Wishlist';
 import PurchaseHistory from './pages/PurchaseHistory';
-import SalesHistory from './pages/SalesHistory';
 
 function App() {
   // Manage Active tab
@@ -12,7 +15,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header user={currentUser} onLogout={handleLogout} />
       
       <div className="max-w-7xl mx-auto px-4 mt-6">
         <div className="flex gap-6">
@@ -27,14 +30,30 @@ function App() {
               <Route path="/" element={<Wishlist />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/purchase-history" element={<PurchaseHistory />} />
-              <Route path="/sales" element={<SalesHistory />} />
             </Routes>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+//  Main App
+const App = () => {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        
+        {/*  Temporary: Bypass auth for testing */}
+        <Route path="/*" element={<UserApp />} />
+        
+        <Route path="/admin/*" element={<AdminRoutes />} />
+      </Routes>
+    </AuthProvider>
+  );
+};
 
 
 export default App;
+}
