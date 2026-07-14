@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Wishlist from './pages/Wishlist';
 import PurchaseHistory from './pages/PurchaseHistory';
+import SalesHistory from './pages/SalesHistory';
 
 function App() {
   // Manage Active tab
@@ -26,6 +27,7 @@ function App() {
               <Route path="/" element={<Wishlist />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/purchase-history" element={<PurchaseHistory />} />
+              <Route path="/sales" element={<SalesHistory />} />
             </Routes>
           </div>
         </div>
