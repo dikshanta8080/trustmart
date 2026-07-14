@@ -98,3 +98,73 @@ export const purchaseData = {
     }
   ]
 };
+
+// Sales History Data
+export const salesData = {
+  stats: {
+    totalRevenue: "$4,891",
+    itemsSold: "34",
+    avgPrice: "$143",
+    bestCategory: "Electronics"
+  },
+  monthlyData: [
+    { month: "Jan", sales: 320 },
+    { month: "Feb", sales: 450 },
+    { month: "Mar", sales: 380 },
+    { month: "Apr", sales: 520 },
+    { month: "May", sales: 680 },
+    { month: "Jun", sales: 750 }
+  ],
+  recentSales: [
+    {
+      id: 1,
+      product: "iPhone 15 Pro Max",
+      price: "$899",
+      buyer: "Michael Chen",
+      date: "Jun 15, 2026",
+      status: "Completed",
+      statusColor: "bg-emerald-500",
+      image: "📱"
+    },
+    {
+      id: 2,
+      product: "Sony WH-1000XM5",
+      price: "$249",
+      buyer: "Jessica Park",
+      date: "Jun 12, 2026",
+      status: "Completed",
+      statusColor: "bg-emerald-500",
+      image: "🎧"
+    },
+    {
+      id: 3,
+      product: "Herman Miller Aeron Chair",
+      price: "$650",
+      buyer: "David Kim",
+      date: "Jun 8, 2026",
+      status: "Shipped",
+      statusColor: "bg-blue-500",
+      image: "🪑"
+    },
+    {
+      id: 4,
+      product: "MacBook Pro 14",
+      price: "$1,999",
+      buyer: "Sarah Lee",
+      date: "Jun 5, 2026",
+      status: "Processing",
+      statusColor: "bg-amber-500",
+      image: "💻"
+    },
+    {
+      id: 5,
+      product: "AirPods Pro 2",
+      price: "$249",
+      buyer: "James Wilson",
+      date: "Jun 2, 2026",
+      status: "Completed",
+      statusColor: "bg-emerald-500",
+      image: "🎧"
+    }
+  ]
+};

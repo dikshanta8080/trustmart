@@ -8,29 +8,6 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Wishlist from './pages/Wishlist';
 import PurchaseHistory from './pages/PurchaseHistory';
-import UserDashboard from './pages/user/UserDashboard';
-
-//  Temporary: Mock user for testing UI
-const mockUser = {
-  id: '123',
-  name: 'Test User',
-  email: 'test@example.com',
-  address: 'Kathmandu, Nepal',
-  roles: ['ROLE_USER']
-};
-
-const UserApp = () => {
-  const [activeTab, setActiveTab] = useState('wishlist');
-  const { user, logout } = useAuth();
-
-  //  Use mock user if no real user
-  const currentUser = user || mockUser;
-
-  const handleLogout = () => {
-    // Just go to login page
-    window.location.href = '/login';
-  };
-
 
 function App() {
   // Manage Active tab
@@ -53,7 +30,6 @@ function App() {
               <Route path="/" element={<Wishlist />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/purchase-history" element={<PurchaseHistory />} />
-              <Route path="/dashboard" element={<UserDashboard />} />
             </Routes>
           </div>
         </div>
