@@ -14,6 +14,7 @@ import Sidebar from '../components/Sidebar';
 
 function SalesHistory() {
   const { stats, monthlyData, recentSales } = salesData;
+   
 
   const statCards = [
     { label: 'Total Revenue', value: stats.totalRevenue, icon: CurrencyDollarIcon, change: '+23%' },
