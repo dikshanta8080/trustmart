@@ -22,6 +22,7 @@ public class PasswordResetToken extends BaseEntity {
     private Instant expiresAt;
 
     @Column(name = "is_used")
+    @Builder.Default
     private boolean isUsed = false;
 
     @OneToOne

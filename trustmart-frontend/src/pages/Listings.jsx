@@ -1,5 +1,4 @@
-import { Package, Clock, CheckCircle, XCircle } from "lucide-react";
-import ListingTable from "../components/ListingTable";
+import { Package, Clock, CheckCircle, XCircle } from "lucide-react";  
 import { listings } from "../data/mockData";
 
 const stats = [
@@ -36,3 +35,37 @@ const stats = [
     sub: "Removed listings",
   },
 ];
+const Listings = () => {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Listings</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((item) => {
+          const Icon = item.icon;
+
+          return (
+            <div
+              key={item.label}
+              className="bg-white rounded-xl shadow p-5 border"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm">{item.label}</p>
+                  <h2 className="text-2xl font-bold">{item.value}</h2>
+                  <p className="text-sm text-gray-400">{item.sub}</p>
+                </div>
+
+                <div className={`${item.iconBg} p-3 rounded-lg`}>
+                  <Icon className={`${item.iconColor}`} size={24} />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default Listings;

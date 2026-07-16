@@ -17,7 +17,7 @@ public class ProductSpecification {
                 String pattern = "%" + request.keyword().toLowerCase() + "%";
 
                 predicates.add(cb.or(
-                        cb.like(cb.lower(root.get("name")), pattern),
+                        cb.like(cb.lower(root.get("title")), pattern),
                         cb.like(cb.lower(root.get("category").get("name")), pattern)
                 ));
             }
@@ -38,7 +38,7 @@ public class ProductSpecification {
 
             if (request.productCondition() != null && !request.productCondition().isBlank()) {
                 predicates.add(
-                        cb.equal(cb.lower(root.get("productCondition")),
+                        cb.equal(cb.lower(root.get("condition")),
                                 request.productCondition().toLowerCase())
                 );
             }
