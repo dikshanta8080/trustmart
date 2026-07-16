@@ -8,11 +8,20 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Wishlist from './pages/Wishlist';
 import PurchaseHistory from './pages/PurchaseHistory';
+import Products from './pages/Products';
 
 function App() {
   // Manage Active tab
    const [activeTab, setActiveTab] = useState('wishlist');
 
+   const currentUser = {
+  name: "Dilasha",
+  role: "Customer",
+};
+    
+const handleLogout = () => {
+  console.log("Logout clicked");
+};
   return (
     <div className="min-h-screen bg-gray-50">
       <Header user={currentUser} onLogout={handleLogout} />
@@ -30,6 +39,7 @@ function App() {
               <Route path="/" element={<Wishlist />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/purchase-history" element={<PurchaseHistory />} />
+              <Route path="/Products" element={<Products />} />
             </Routes>
           </div>
         </div>
@@ -38,22 +48,4 @@ function App() {
   );
 };
 
-//  Main App
-const App = () => {
-  return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        
-        {/*  Temporary: Bypass auth for testing */}
-        <Route path="/*" element={<UserApp />} />
-        
-        <Route path="/admin/*" element={<AdminRoutes />} />
-      </Routes>
-    </AuthProvider>
-  );
-};
-
-
 export default App;
-}
