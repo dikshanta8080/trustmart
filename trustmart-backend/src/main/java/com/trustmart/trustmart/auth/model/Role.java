@@ -17,6 +17,10 @@ public enum Role {
             Permission.USER_UPDATE,
             Permission.USER_DELETE,
             Permission.PROFILE_UPDATE,
+            Permission.CATEGORY_VIEW
+            Permission.CATEGORY_ADD,
+            Permission.CATEGORY_UPDATE,
+            Permission.CATEGORY_DELETE
             Permission.CATEGORY_VIEW,
             Permission.CATEGORY_ADD,
             Permission.CATEGORY_UPDATE,
@@ -42,6 +46,7 @@ public enum Role {
             Permission.USER_UPDATE,
             Permission.PROFILE_UPDATE,
             Permission.CATEGORY_VIEW,
+            Permission.CATEGORY_ADD
             Permission.CATEGORY_ADD,
             Permission.ORDER_CREATE,
             Permission.ORDER_VIEW,

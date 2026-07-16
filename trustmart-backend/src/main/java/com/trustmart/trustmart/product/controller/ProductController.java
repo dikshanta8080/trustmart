@@ -44,6 +44,10 @@ public class ProductController {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_ADD')")
+    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@RequestPart("product") ProductRequestDto productRequestDto,
+                                                                      @RequestPart("images") List<MultipartFile> multipartFileList) {
+        ProductResponseDto productResponseDto = productService.addProduct(productRequestDto, multipartFileList);
+        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product created successfully"));
     public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(
             @Valid @RequestPart("product") ProductRequestDto productRequestDto,
             @RequestPart("images") List<MultipartFile> images
@@ -87,6 +91,15 @@ public class ProductController {
         );
     }
 
+    @PutMapping(value = "/{uuid}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
+    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@PathVariable UUID uuid,
+                                                                         @RequestPart("product") ProductRequestDto productRequestDto,
+                                                                         @RequestPart(value = "images", required = false)
+                                                                         List<MultipartFile> images) {
+        ProductResponseDto productResponseDto = productService.updateProduct(uuid, productRequestDto, images);
+        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product updated successfully"));
     @Operation(
             summary = "Update product",
             requestBody = @RequestBody(

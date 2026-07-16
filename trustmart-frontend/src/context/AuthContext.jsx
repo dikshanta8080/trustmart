@@ -1,152 +1,92 @@
-import { createContext, useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/context/AuthContext.jsx
+import { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../utils/api';
 
 const AuthContext = createContext(null);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
-  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
+  // Check for existing token on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-    
-    if (storedToken && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-        setToken(storedToken);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        logout();
-      }
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      // Optionally fetch user data
+      authAPI
+        .getCurrentUser()
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch(() => {
+          // Token invalid – clear storage
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          setUser(null);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  const padPassword = (pwd) => {
-    if (!pwd) return pwd;
-    if (pwd.length >= 6) return pwd;
-    return pwd + 'x'.repeat(6 - pwd.length);
+  const login = async (email, password) => {
+    setError(null);
+    try {
+      const response = await authAPI.login(email, password);
+      const { accessToken, refreshToken, user } = response.data;
+      localStorage.setItem('accessToken', accessToken);
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+      setUser(user);
+      return response.data;
+    } catch (err) {
+      setError(err.message || 'Login failed');
+      throw err;
+    }
   };
 
-  const login = async (email, password, rememberMe = false) => {
+  const logout = async () => {
     try {
-      setLoading(true);
-      const response = await authAPI.login({
-        email: email.trim(),
-        password: padPassword(password)
-      });
-
-      const loginData = response.data;
-      const roleNames = loginData.roles?.map(role => role.name) || [];
-      
-      const userData = {
-        id: loginData.id,
-        name: loginData.name,
-        address: loginData.address,
-        email: loginData.email,
-        roles: roleNames,
-        roleObjects: loginData.roles
-      };
-
-      localStorage.setItem('token', loginData.token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      if (rememberMe) {
-        localStorage.setItem('rememberedEmail', email);
-      } else {
-        localStorage.removeItem('rememberedEmail');
-      }
-
-      setToken(loginData.token);
-      setUser(userData);
-
-      const isAdmin = roleNames.some(role => 
-        role === "ROLE_ADMIN" || role === "ADMIN" || role === "admin"
-      );
-      
-      if (isAdmin) {
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        navigate('/user/dashboard', { replace: true });
-      }
-
-      return { success: true, user: userData };
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      await authAPI.logout();
+    } catch (err) {
+      // ignore logout errors
     } finally {
-      setLoading(false);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      setUser(null);
     }
   };
 
   const register = async (userData) => {
+    setError(null);
     try {
-      setLoading(true);
-      const response = await authAPI.register({
-        name: userData.name.trim(),
-        address: userData.address.trim(),
-        email: userData.email.trim(),
-        password: padPassword(userData.password)
-      });
-      return { success: true, message: response.message || 'Account created successfully!' };
-    } catch (error) {
-      console.error('Register error:', error);
-      throw error;
-    } finally {
-      setLoading(false);
+      const response = await authAPI.register(userData);
+      return response.data;
+    } catch (err) {
+      setError(err.message || 'Registration failed');
+      throw err;
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('rememberedEmail');
-    setUser(null);
-    setToken(null);
-    navigate('/login', { replace: true });
-  };
-
-  const isAdmin = () => {
-    if (!user) return false;
-    return user.roles?.some(role => 
-      role === "ROLE_ADMIN" || role === "ADMIN" || role === "admin"
-    );
-  };
-
-  const isAuthenticated = () => {
-    return !!token && !!user;
   };
 
   const value = {
     user,
-    token,
     loading,
+    error,
     login,
-    register,
     logout,
-    isAdmin,
-    isAuthenticated,
-    setUser,
-    setToken
+    register,
+    isAuthenticated: !!user,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export default AuthContext;
+// Custom hook to use auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
