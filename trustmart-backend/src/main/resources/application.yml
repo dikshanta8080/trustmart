@@ -1,0 +1,41 @@
+spring:
+  profiles:
+    active: dipisha
+  application:
+    name: trustmart
+  web:
+    cors:
+      allowed-origins:
+        - "http://localhost:3000"
+        - "http://localhost:3001"
+        - "http://127.0.0.1:3000"
+        - "http://127.0.0.1:3001"
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+app:
+  jwt:
+    expiry: 10
+    secret: a9f3c1d8e7b4f6c2d9a1e8f7b3c6d2a9f4e8c1b7d6a3f9c2e8b5d1a7f6c3e9b2
+  admin:
+    name: Dikshanta Acharya
+    email: dikshantaacharya04@gmail.com
+    password: root
+    address: Itahari 17
+
+kafka:
+  bootstrap-servers: localhost:9092
+file.upload-dir: uploads

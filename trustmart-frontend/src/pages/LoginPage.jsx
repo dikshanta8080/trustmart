@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { Shield, Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 
 export default function LoginPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  // State to switch between Login and Register form
+  const [isRegister, setIsRegister] = useState(false);
   
-  const [isRegister, setIsRegister] = useState(location.pathname === "/register");
+  // State to show/hide password
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   
@@ -18,45 +17,24 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-  
-  // Destructure `user` as well
-  const { login, register, loading, isAuthenticated, user } = useAuth();
 
-  useEffect(() => {
-    setIsRegister(location.pathname === "/register");
-    setError("");
-    setSuccessMsg("");
-  }, [location.pathname]);
+  // Navigate function - redirect to different pages
+  const navigate = useNavigate();
 
-  // Load saved email
+  // useEffect - read email from localStorage when page loads
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setEmail(savedEmail);
       setRememberMe(true);  
     }
-  }, []);
+  }, []); // Empty array - only run once when page loads
 
-  // Check if already logged in – FIX: isAuthenticated is a boolean, not a function
-  useEffect(() => {
-    if (isAuthenticated) {  // <-- no parentheses
-      // Use the user object from context instead of reading from localStorage
-      const roles = user?.roles || [];
-      const isAdmin = roles.some(role => 
-        role === "ROLE_ADMIN" || role === "ADMIN" || role === "admin"
-      );
-      if (isAdmin) {
-        navigate("/admin/dashboard", { replace: true });
-      } else {
-        navigate("/user/dashboard", { replace: true });
-      }
-    }
-  }, [isAuthenticated, navigate, user]); // add `user` as dependency
+  // Form submit handler function
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent page reload
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+    setError(""); // Clear old error
 
     // Validation
     if (isRegister) {
@@ -98,17 +76,16 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
-        await register({ name, address, email, password });
-        setSuccessMsg("Account created successfully! Please sign in below.");
-        setName("");
-        setAddress("");
+        // Register success - show alert
+        alert("Account created successfully!");
+        // Reset form and switch to login mode
+        setIsRegister(false);
+        setFullName("");
         setPassword("");
         setConfirmPassword("");
-        setEmail("");
-        navigate("/login");
       } else {
-        await login(email, password, rememberMe);
-        // The useEffect above will handle redirect
+        // Login success - navigate to dashboard
+        navigate("/dashboard");
       }
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -137,13 +114,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Success Message */}
-          {successMsg && (
-            <div className="mb-4 bg-green-50 border border-green-200 text-green-600 text-sm px-4 py-3 rounded-lg">
-              {successMsg}
-            </div>
-          )}
-
+          {/* Form - main form for login/register */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Full Name - Register only */}
             {isRegister && (
@@ -325,7 +296,8 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                navigate(isRegister ? "/login" : "/register");
+                setIsRegister(!isRegister); // Switch mode
+                setError(""); // Clear errors
               }}
               className="text-blue-600 font-medium hover:underline ml-1 cursor-pointer"
             >

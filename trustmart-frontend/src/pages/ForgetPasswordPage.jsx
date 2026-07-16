@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
 import { authAPI } from "../utils/api";
 
-
 export default function ForgetPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
