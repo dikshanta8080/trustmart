@@ -6,7 +6,7 @@ import {
   BellIcon,
   ChatBubbleLeftIcon
 } from '@heroicons/react/24/outline';
-
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
@@ -34,13 +34,13 @@ const Header = () => {
       {/* Navigation */}
       <div className="shrink-0 ml-auto">
         <nav className="flex items-center gap-6 text-sm font-medium">
-          <a href="#" className="text-gray-600 hover:text-blue-600 whitespace-nowrap">
+          <Link to="/" className="text-gray-600 hover:text-blue-600 whitespace-nowrap">
             Home
-          </a>
+          </Link>
 
-          <a href="#" className="text-gray-600 hover:text-blue-600 whitespace-nowrap">
+          <Link to="/products" className="text-gray-600 hover:text-blue-600 whitespace-nowrap">
             Browse
-          </a>
+          </Link>
 
           {/* Sell Button */}
           <button className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition whitespace-nowrap">

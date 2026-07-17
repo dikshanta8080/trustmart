@@ -1,5 +1,6 @@
 package com.trustmart.trustmart.product.model;
 
+import com.trustmart.trustmart.auth.model.User;
 import com.trustmart.trustmart.common.model.BaseEntity;
 import com.trustmart.trustmart.common.model.ImageData;
 import com.trustmart.trustmart.product.enums.ProductCondition;
@@ -40,13 +41,17 @@ public class Product extends BaseEntity {
     private ProductStatus status;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ImageData> imageData = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private User seller;
 
 
     public void addImageData(ImageData imageData){
