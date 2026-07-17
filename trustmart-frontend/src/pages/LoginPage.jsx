@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Mail, Lock, Eye, EyeOff, User } from "lucide-react";
+import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react"; // added Building
 
 export default function LoginPage() {
   // State to switch between Login and Register form
@@ -17,6 +17,9 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  
+  //  ADDED: loading state for submit button
+  const [loading, setLoading] = useState(false);
 
   // Navigate function - redirect to different pages
   const navigate = useNavigate();
@@ -28,49 +31,56 @@ export default function LoginPage() {
       setEmail(savedEmail);
       setRememberMe(true);  
     }
-  }, []); // Empty array - only run once when page loads
+  }, []);
 
   // Form submit handler function
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent page reload
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    setError(""); // Clear old error
+    setError("");
+    setLoading(true); //  start loading
 
     // Validation
     if (isRegister) {
       if (!name.trim()) {
         setError("Please enter your full name");
+        setLoading(false);
         return;
       }
       if (!address.trim()) {
         setError("Please enter your address");
+        setLoading(false);
         return;
       }
     }
 
     if (!email.trim()) {
       setError("Please enter your email");
+      setLoading(false);
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address");
+      setLoading(false);
       return;
     }
 
     if (!password.trim()) {
       setError("Please enter your password");
+      setLoading(false);
       return;
     }
 
-    // Allow 4 characters minimum
     if (password.length < 4) {
       setError("Password must be at least 4 characters");
+      setLoading(false);
       return;
     }
 
     if (isRegister && password !== confirmPassword) {
       setError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
@@ -80,7 +90,7 @@ export default function LoginPage() {
         alert("Account created successfully!");
         // Reset form and switch to login mode
         setIsRegister(false);
-        setFullName("");
+        setName("");          // changed from setFullName
         setPassword("");
         setConfirmPassword("");
       } else {
@@ -89,6 +99,8 @@ export default function LoginPage() {
       }
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false); // ✅ stop loading in any case
     }
   };
 
@@ -296,8 +308,8 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                setIsRegister(!isRegister); // Switch mode
-                setError(""); // Clear errors
+                setIsRegister(!isRegister);
+                setError("");
               }}
               className="text-blue-600 font-medium hover:underline ml-1 cursor-pointer"
             >

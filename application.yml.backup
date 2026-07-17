@@ -1,0 +1,64 @@
+spring:
+  profiles:
+    active: dev
+
+  application:
+    name: trustmart
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dikshantaacharya04@gmail.com
+    password: lhfz qiuy qhzv houl
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/trustmart
+    username: postgres
+    password: 1234
+
+    hikari:
+      pool-name: TrustMartPool
+      maximum-pool-size: 20
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 5000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+  multipart:
+    max-file-size: 10MB
+    max-request-size: 10MB
+
+app:
+  jwt:
+    expiry: 10
+    secret: a9f3c1d8e7b4f6c2d9a1e8f7b3c6d2a9f4e8c1b7d6a3f9c2e8b5d1a7f6c3e9b2
+
+  admin:
+    name: Dikshanta Acharya
+    email: dikshantaacharya04@gmail.com
+    password: root
+    address: Itahari 17
+
+kafka:
+  bootstrap-servers: localhost:9092
+
+file:
+  upload-dir: uploads
