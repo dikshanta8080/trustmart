@@ -44,23 +44,11 @@ public class ProductController {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_ADD')")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@RequestPart("product") ProductRequestDto productRequestDto,
-                                                                      @RequestPart("images") List<MultipartFile> multipartFileList) {
-        ProductResponseDto productResponseDto = productService.addProduct(productRequestDto, multipartFileList);
-        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product created successfully"));
     public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(
             @Valid @RequestPart("product") ProductRequestDto productRequestDto,
             @RequestPart("images") List<MultipartFile> images
     ) {
-
-        System.out.println("PRODUCT API HIT");
-        System.out.println(productRequestDto);
-        System.out.println("Images count: " + images.size());
-
-        ProductResponseDto productResponseDto =
-                productService.addProduct(productRequestDto, images);
-        System.out.println(productResponseDto);
-
+        ProductResponseDto productResponseDto = productService.addProduct(productRequestDto, images);
         return ResponseEntity.ok(
                 ApiResponse.success(productResponseDto, "Product created successfully")
         );
@@ -91,27 +79,6 @@ public class ProductController {
         );
     }
 
-    @PutMapping(value = "/{uuid}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@PathVariable UUID uuid,
-                                                                         @RequestPart("product") ProductRequestDto productRequestDto,
-                                                                         @RequestPart(value = "images", required = false)
-                                                                         List<MultipartFile> images) {
-        ProductResponseDto productResponseDto = productService.updateProduct(uuid, productRequestDto, images);
-        return ResponseEntity.ok(ApiResponse.success(productResponseDto, "Product updated successfully"));
-    @Operation(
-            summary = "Update product",
-            requestBody = @RequestBody(
-                    content = @Content(
-                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                            encoding = {
-                                    @Encoding(name = "product", contentType = MediaType.APPLICATION_JSON_VALUE),
-                                    @Encoding(name = "images", contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                            }
-                    )
-            )
-    )
     @PutMapping(value = "/{uuid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
     public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(

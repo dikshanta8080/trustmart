@@ -24,34 +24,24 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 
     private final JwtService jwtService;
     private final CustomUserDetailService userDetailsService;
-
-    @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
-
-        StompHeaderAccessor accessor =
-                MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-
-        if (accessor == null) return message;
-        if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            String authHeader = accessor.getFirstNativeHeader("Authorization");
-
     private final ChatRoomService chatRoomService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        if (accessor == null) return message;
+        if (accessor == null) {
+            return message;
+        }
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             String authHeader = accessor.getFirstNativeHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 throw new IllegalArgumentException("Missing token");
             }
+
             String token = authHeader.substring(7);
-
             String username = jwtService.extractUsername(token);
-
             UserDetails user = userDetailsService.loadUserByUsername(username);
 
             if (!jwtService.verifyToken(token, (UserPrinciple) user)) {
@@ -59,19 +49,8 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
             }
 
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            user.getUsername(),
-                            null,
-                            user.getAuthorities()
-                    );
-
+                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             accessor.setUser(authentication);
-            String username = jwtService.extractUsername(token);
-            UserDetails user = userDetailsService.loadUserByUsername(username);
-            if (!jwtService.verifyToken(token, (UserPrinciple) user)) {
-                throw new IllegalArgumentException("Invalid token");
-            }
-            accessor.setUser(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
         }
 
         if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {

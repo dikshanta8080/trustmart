@@ -100,7 +100,7 @@ export default function LoginPage() {
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
-      setLoading(false); // ✅ stop loading in any case
+      setLoading(false); //  stop loading in any case
     }
   };
 
