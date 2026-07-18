@@ -10,16 +10,17 @@ import java.util.Set;
 public enum Role {
     ADMIN(Set.of(
             Permission.PRODUCT_ADD,
+            Permission.PRODUCT_VIEW,
             Permission.PRODUCT_UPDATE,
+            Permission.PRODUCT_DELETE,
             Permission.GREET_ADMIN,
             Permission.USER_VIEW,
             Permission.ALL_USER_VIEW,
             Permission.USER_UPDATE,
             Permission.USER_DELETE,
             Permission.PROFILE_UPDATE,
-            Permission.CATEGORY_UPDATE,
-            Permission.CATEGORY_DELETE
             Permission.CATEGORY_ADD,
+            Permission.CATEGORY_VIEW,
             Permission.CATEGORY_UPDATE,
             Permission.CATEGORY_DELETE,
             Permission.ORDER_CREATE,
@@ -34,8 +35,8 @@ public enum Role {
             Permission.REVIEW_CREATE,
             Permission.REVIEW_VIEW,
             Permission.REVIEW_DELETE
-
-    )), USER(Set.of(
+    )),
+    USER(Set.of(
             Permission.PRODUCT_ADD,
             Permission.PRODUCT_VIEW,
             Permission.PRODUCT_UPDATE,
@@ -43,7 +44,6 @@ public enum Role {
             Permission.USER_UPDATE,
             Permission.PROFILE_UPDATE,
             Permission.CATEGORY_VIEW,
-            Permission.CATEGORY_ADD
             Permission.CATEGORY_ADD,
             Permission.ORDER_CREATE,
             Permission.ORDER_VIEW,

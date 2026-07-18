@@ -300,4 +300,4 @@ export const productsData = [
     discount: 31
   }
 ];
-};
+

@@ -1,97 +1,54 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import AdminRoutes from "./routes/AdminRoutes";
+import { useAuth } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
-import Users from "./pages/Users";
-import Listings from "./pages/Listings";
-import Dashboard from "./pages/Dashboard";
 
 const App = () => {
-  const isAuthenticated = false; // Replace with real auth logic later
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-600">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <Routes>
-      {/* Public routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<LoginPage />} />      {/* <-- ADD THIS */}
+      <Route
+        path="/login"
+        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
+      />
+      <Route
+        path="/register"
+        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
+      />
       <Route path="/forgot-password" element={<ForgetPasswordPage />} />
 
-      {/* Protected routes (only if authenticated) */}
       <Route
         path="/"
+        element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
+      />
+
+      <Route
+        path="/dashboard"
         element={
           isAuthenticated ? (
-            <Navigate to="/dashboard" replace />
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+                <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
+                <p className="text-sm text-slate-500 mt-2">Authentication is working. You can now wire the real dashboard page here.</p>
+              </div>
+            </div>
           ) : (
             <Navigate to="/login" replace />
           )
         }
       />
-      <Route
-        path="/dashboard"
-        element={
-          isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />
-        }
-      />
-     
 
-      {/* Admin routes – if you want to protect them, you can wrap AdminRoutes */}
-      <Route
-        path="/admin/*"
-        element={
-          isAuthenticated ? <AdminRoutes /> : <Navigate to="/login" replace />
-        }
-      />
-
-      {/* Fallback for unknown paths */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  );
-};
-
-export default App;
-import ProtectedRoute from "./routes/ProtectedRoute";
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Wishlist from './pages/Wishlist';
-import PurchaseHistory from './pages/PurchaseHistory';
-import Products from './pages/Products';
-
-function App() {
-  // Manage Active tab
-   const [activeTab, setActiveTab] = useState('wishlist');
-
-   const currentUser = {
-  name: "Dilasha",
-  role: "Customer",
-};
-    
-const handleLogout = () => {
-  console.log("Logout clicked");
-};
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Header user={currentUser} onLogout={handleLogout} />
-      
-      <div className="max-w-7xl mx-auto px-4 mt-6">
-        <div className="flex gap-6">
-          {/* Sidebar  */}
-          <div className="w-64 hidden md:block flex-shrink-0">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
-          
-          {/* Main Content */}
-          <div className="flex-1">
-            <Routes>
-              <Route path="/" element={<Wishlist />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/purchase-history" element={<PurchaseHistory />} />
-              <Route path="/Products" element={<Products />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 };
 
