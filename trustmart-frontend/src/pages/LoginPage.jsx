@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react"; // added Building
+import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react";
+import { authAPI } from "../utils/api";
 
 export default function LoginPage() {
   // State to switch between Login and Register form
@@ -86,19 +87,53 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
-        // Register success - show alert
+        await authAPI.register({
+          name,
+          address,
+          email,
+          password,
+        });
+
         alert("Account created successfully!");
-        // Reset form and switch to login mode
         setIsRegister(false);
-        setName("");          // changed from setFullName
+        setName("");
+        setAddress("");
         setPassword("");
         setConfirmPassword("");
       } else {
-        // Login success - navigate to dashboard
+        const response = await authAPI.login(email, password);
+        const authData = response?.data?.data;
+        const tokenData = authData?.tokenResponse;
+
+        if (tokenData?.accessToken) {
+          localStorage.setItem("accessToken", tokenData.accessToken);
+        }
+
+        if (tokenData?.refreshToken) {
+          localStorage.setItem("refreshToken", tokenData.refreshToken);
+        }
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            name: authData?.name || email,
+            email: authData?.email || email,
+            address: authData?.address || "",
+            roles: authData?.role ? [authData.role] : ["ROLE_USER"],
+          })
+        );
+
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+
         navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.message || "Something went wrong. Please try again.");
+      const serverMessage = err?.response?.data?.message;
+      setError(serverMessage || err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false); //  stop loading in any case
     }

@@ -92,29 +92,36 @@ export default function UserDashboard() {
       setLoading(true);
       setError('');
 
-      // Attempt to call all dashboard endpoints in parallel
-      const [statsRes, activityRes, revenueRes, ordersRes, pendingRes, salesRes] = await Promise.all([
+      const [profileRes, statsRes, activityRes, revenueRes, ordersRes, pendingRes, salesRes] = await Promise.all([
+        dashboardAPI.getProfile().catch(() => null),
         dashboardAPI.getStats(),
         dashboardAPI.getRecentActivity(),
         dashboardAPI.getRevenueTrend(),
         dashboardAPI.getMonthlyOrders(),
         dashboardAPI.getPendingActions(),
-        dashboardAPI.getSalesHistory()
+        dashboardAPI.getSalesHistory(),
       ]);
 
-      // Set real data from API
-      setStats(statsRes.data);
-      setRecentActivity(activityRes.data);
-      setRevenueData(revenueRes.data);
-      setOrderData(ordersRes.data);
-      setPendingActions(pendingRes.data);
-      setSalesHistory(salesRes.data);
+      const profile = profileRes?.data?.data || profileRes?.data || null;
+      if (profile) {
+        setUser({
+          name: profile.name || 'User',
+          email: profile.email || '',
+          address: profile.address || '',
+          roles: profile.role ? [profile.role] : ['ROLE_USER'],
+        });
+      }
 
+      setStats(statsRes);
+      setRecentActivity(activityRes);
+      setRevenueData(revenueRes);
+      setOrderData(ordersRes);
+      setPendingActions(pendingRes);
+      setSalesHistory(salesRes);
     } catch (err) {
       console.error('Dashboard fetch error:', err);
       setError(err.message || 'Failed to load dashboard data');
-      
-      //  Fallback to mock data if API fails
+
       setStats(MOCK_STATS);
       setRecentActivity(MOCK_ACTIVITY);
       setRevenueData(MOCK_REVENUE);
