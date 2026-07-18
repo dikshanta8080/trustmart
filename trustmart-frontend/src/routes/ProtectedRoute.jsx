@@ -24,16 +24,15 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     return children;
   }
 
-  const hasRequiredRole = userRoles.some(
-    (role) =>
-      role === requiredRole ||
-      role === `ROLE_${requiredRole.toUpperCase()}` ||
-      role.toUpperCase() === requiredRole.toUpperCase()
+  const hasRequiredRole = userRoles.some((role) =>
+    role === requiredRole ||
+    role === `ROLE_${requiredRole.toUpperCase()}` ||
+    role.toUpperCase() === requiredRole.toUpperCase()
   );
 
   if (!hasRequiredRole) {
     if (requiredRole === "admin" || requiredRole === "ROLE_ADMIN") {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/dashboard" replace />;
     }
     return <Navigate to="/dashboard" replace />;
   }

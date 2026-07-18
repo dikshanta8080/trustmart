@@ -135,7 +135,7 @@ export default function LoginPage() {
       const serverMessage = err?.response?.data?.message;
       setError(serverMessage || err.message || "Something went wrong. Please try again.");
     } finally {
-      setLoading(false);
+      setLoading(false); //  stop loading in any case
     }
   };
 

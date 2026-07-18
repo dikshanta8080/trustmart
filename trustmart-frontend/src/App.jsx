@@ -1,29 +1,18 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import AdminRoutes from "./routes/AdminRoutes";
+import ProtectedRoute from "./routes/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-600">
-        Loading...
-      </div>
-    );
-  }
+  const { isAuthenticated } = useAuth();
 
   return (
     <Routes>
-      <Route
-        path="/login"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
-      />
-      <Route
-        path="/register"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
-      />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgetPasswordPage />} />
 
       <Route
@@ -44,6 +33,24 @@ const App = () => {
           ) : (
             <Navigate to="/login" replace />
           )
+        }
+      />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/*"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminRoutes />
+          </ProtectedRoute>
         }
       />
 
