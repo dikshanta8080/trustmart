@@ -3,7 +3,11 @@ import axios from 'axios';
 // --------------------------------------------
 // 1. Base URL – use the backend context path
 // --------------------------------------------
+<<<<<<< HEAD
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+=======
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081/api/v1';
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
 
 // --------------------------------------------
 // 2. Axios instance
@@ -42,7 +46,11 @@ apiClient.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) throw new Error('No refresh token');
+<<<<<<< HEAD
 
+=======
+        // Spring Boot refresh endpoint – adjust if different
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
         const { data } = await axios.post(`${API_BASE_URL}/auth/rotate`, {
           refreshToken,
         });
@@ -79,17 +87,185 @@ export const authAPI = {
   register: (userData) =>
     apiClient.post('/auth/register', userData),
 
+<<<<<<< HEAD
   getOtp: (email) =>
     apiClient.post(`/auth/get-otp?email=${encodeURIComponent(email)}`),
 
   changePassword: (payload) =>
     apiClient.post('/auth/change-password', payload),
+=======
+  forgotPassword: (email) =>
+    apiClient.post('/auth/get-otp', null, { params: { email } }),
+
+  resetPassword: (email, otp, newPassword) =>
+    apiClient.post('/auth/change-password', {
+      email,
+      otp,
+      newPassword,
+    }),
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
 
   logout: () =>
     apiClient.post('/auth/logout'),
 
   getCurrentUser: () =>
     apiClient.get('/users/profile'),
+<<<<<<< HEAD
+=======
+};
+
+// ----- Dashboard / User Home -----
+const unwrapApiData = (payload) => {
+  if (payload?.data?.data !== undefined) return payload.data.data;
+  if (payload?.data !== undefined) return payload.data;
+  return payload;
+};
+
+const normalizeArray = (value) => {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.content)) return value.content;
+  if (Array.isArray(value?.data)) return value.data;
+  return [];
+};
+
+const getMonthKey = (dateValue) => {
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return null;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+};
+
+const numberOrZero = (value) => Number(value || 0);
+
+export const dashboardAPI = {
+  getProfile: () => apiClient.get('/users/profile'),
+  getMyListings: () => apiClient.get('/products'),
+  getMyOrders: () => apiClient.get('/orders/my-orders'),
+  getSellerOrders: () => apiClient.get('/orders/seller-orders'),
+  getWishlist: () => apiClient.get('/wishlist'),
+  getMyReviews: () => apiClient.get('/reviews/my-reviews'),
+
+  getStats: async () => {
+    const [profileRes, listingsRes, myOrdersRes, sellerOrdersRes, wishlistRes] = await Promise.allSettled([
+      dashboardAPI.getProfile(),
+      dashboardAPI.getMyListings(),
+      dashboardAPI.getMyOrders(),
+      dashboardAPI.getSellerOrders(),
+      dashboardAPI.getWishlist(),
+    ]);
+
+    const profile = unwrapApiData(profileRes.value || {});
+    const listings = normalizeArray(unwrapApiData(listingsRes.value || {}));
+    const myOrders = normalizeArray(unwrapApiData(myOrdersRes.value || {}));
+    const sellerOrders = normalizeArray(unwrapApiData(sellerOrdersRes.value || {}));
+    const wishlist = normalizeArray(unwrapApiData(wishlistRes.value || {}));
+
+    const totalSales = sellerOrders.reduce((sum, order) => sum + numberOrZero(order.price), 0);
+
+    return {
+      totalListings: listings.length,
+      totalSales,
+      totalOrders: myOrders.length + sellerOrders.length,
+      profileViews: 0,
+      thisMonthGrowth: Math.min(99, Math.max(0, Math.round((wishlist.length || 0) * 2))),
+      monthlyOrdersGrowth: Math.min(99, Math.max(0, Math.round((myOrders.length + sellerOrders.length) * 5))),
+      profile,
+    };
+  },
+
+  getRecentActivity: async () => {
+    const [myOrdersRes, sellerOrdersRes, myReviewsRes] = await Promise.allSettled([
+      dashboardAPI.getMyOrders(),
+      dashboardAPI.getSellerOrders(),
+      dashboardAPI.getMyReviews(),
+    ]);
+
+    const myOrders = normalizeArray(unwrapApiData(myOrdersRes.value || {}));
+    const sellerOrders = normalizeArray(unwrapApiData(sellerOrdersRes.value || {}));
+    const myReviews = normalizeArray(unwrapApiData(myReviewsRes.value || {}));
+
+    const activity = [
+      ...myOrders.slice(0, 2).map((order) => ({
+        action: `Order ${order.status || 'placed'} for ${order.productTitle || 'product'}`,
+        time: order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Recent order',
+      })),
+      ...sellerOrders.slice(0, 2).map((order) => ({
+        action: `Sale ${order.status || 'processed'} for ${order.productTitle || 'product'}`,
+        time: order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Recent sale',
+      })),
+      ...myReviews.slice(0, 2).map((review) => ({
+        action: `Review received for ${review.productTitle || 'product'}`,
+        time: review.createdAt ? new Date(review.createdAt).toLocaleDateString() : 'Recent review',
+      })),
+    ];
+
+    return activity.slice(0, 5);
+  },
+
+  getRevenueTrend: async () => {
+    const sellerOrdersRes = await Promise.allSettled([dashboardAPI.getSellerOrders()]);
+    const sellerOrders = normalizeArray(unwrapApiData(sellerOrdersRes[0].value || {}));
+
+    const grouped = sellerOrders.reduce((acc, order) => {
+      const monthKey = getMonthKey(order.createdAt || order.orderDate);
+      if (!monthKey) return acc;
+      acc[monthKey] = (acc[monthKey] || 0) + numberOrZero(order.price);
+      return acc;
+    }, {});
+
+    const months = Object.entries(grouped).slice(-6);
+    return months.map(([month, value]) => ({
+      month: month.split('-')[1] ? new Date(`${month}-01`).toLocaleString('en-US', { month: 'short' }) : month,
+      value,
+    }));
+  },
+
+  getMonthlyOrders: async () => {
+    const myOrdersRes = await Promise.allSettled([dashboardAPI.getMyOrders()]);
+    const myOrders = normalizeArray(unwrapApiData(myOrdersRes[0].value || {}));
+
+    const grouped = myOrders.reduce((acc, order) => {
+      const monthKey = getMonthKey(order.createdAt || order.orderDate);
+      if (!monthKey) return acc;
+      acc[monthKey] = (acc[monthKey] || 0) + 1;
+      return acc;
+    }, {});
+
+    return Object.entries(grouped).slice(-6).map(([month, orders]) => ({
+      month: new Date(`${month}-01`).toLocaleString('en-US', { month: 'short' }),
+      orders,
+    }));
+  },
+
+  getPendingActions: async () => {
+    const [sellerOrdersRes, reviewsRes] = await Promise.allSettled([
+      dashboardAPI.getSellerOrders(),
+      dashboardAPI.getMyReviews(),
+    ]);
+
+    const sellerOrders = normalizeArray(unwrapApiData(sellerOrdersRes.value || {}));
+    const reviews = normalizeArray(unwrapApiData(reviewsRes.value || {}));
+    const ordersToShip = sellerOrders.filter((order) => (order.status || '').toUpperCase() === 'PENDING').length;
+
+    return {
+      offers: 0,
+      ordersToShip,
+      reviewsToRespond: reviews.length,
+    };
+  },
+
+  getSalesHistory: async () => {
+    const sellerOrdersRes = await Promise.allSettled([dashboardAPI.getSellerOrders()]);
+    const sellerOrders = normalizeArray(unwrapApiData(sellerOrdersRes[0].value || {}));
+
+    return sellerOrders.slice(0, 5).map((order, index) => ({
+      id: order.id || index + 1,
+      item: order.productTitle || 'Product',
+      price: numberOrZero(order.price),
+      date: order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Recent',
+      buyer: order.buyerName || 'Buyer',
+    }));
+  },
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
 };
 
 // ----- Orders -----

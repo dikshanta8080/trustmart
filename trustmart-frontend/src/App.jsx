@@ -17,9 +17,19 @@ const App = () => {
 
       <Route
         path="/"
+        element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
+      />
+
+      <Route
+        path="/dashboard"
         element={
           isAuthenticated ? (
-            <Navigate to="/dashboard" replace />
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+                <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
+                <p className="text-sm text-slate-500 mt-2">Authentication is working. You can now wire the real dashboard page here.</p>
+              </div>
+            </div>
           ) : (
             <Navigate to="/login" replace />
           )
