@@ -30,7 +30,6 @@ export default function ForgetPasswordPage() {
     setLoading(true);
 
     try {
-<<<<<<< HEAD
       const response = await authAPI.getOtp(email);
       const apiMessage = response?.data?.message || response?.message || "Password reset link sent to your email!";
 
@@ -39,17 +38,6 @@ export default function ForgetPasswordPage() {
       setEmail("");
     } catch (err) {
       setError(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
-=======
-      const response = await authAPI.forgotPassword(email);
-      const apiMessage = response?.data?.message;
-
-      setSuccess(true);
-      setMessage(apiMessage || "An OTP has been generated. Use it in the password change flow.");
-      setEmail("");
-    } catch (err) {
-      const serverMessage = err?.response?.data?.message;
-      setError(serverMessage || err.message || "Something went wrong. Please try again.");
->>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
     } finally {
       setLoading(false);
     }
