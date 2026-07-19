@@ -5,6 +5,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
 import UserDashboard from "./pages/user/UserDashboard";
+import ChangePasswordPage from "./pages/user/ChangePasswordPage";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -14,7 +15,7 @@ const App = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgetPasswordPage />} />
-
+      <Route path="/Change-password" element={<ChangePasswordPage />} />
       <Route
         path="/"
         element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
