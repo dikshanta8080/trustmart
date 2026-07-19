@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // --------------------------------------------
-// 1. Base URL – set in .env file
+// 1. Base URL – use the backend context path
 // --------------------------------------------
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 // --------------------------------------------
 // 2. Axios instance
@@ -42,13 +42,17 @@ apiClient.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) throw new Error('No refresh token');
-        // Spring Boot refresh endpoint – adjust if different
-        const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+
+        const { data } = await axios.post(`${API_BASE_URL}/auth/rotate`, {
           refreshToken,
         });
-        // Spring Boot often returns { accessToken, refreshToken } or just accessToken
-        const newAccessToken = data.accessToken || data.token;
-        localStorage.setItem('accessToken', newAccessToken);
+
+        const newAccessToken = data?.data?.tokenResponse?.accessToken || data?.data?.accessToken;
+        const newRefreshToken = data?.data?.tokenResponse?.refreshToken || data?.data?.refreshToken;
+
+        if (newAccessToken) localStorage.setItem('accessToken', newAccessToken);
+        if (newRefreshToken) localStorage.setItem('refreshToken', newRefreshToken);
+
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return apiClient(originalRequest);
       } catch (refreshError) {
@@ -63,168 +67,174 @@ apiClient.interceptors.response.use(
 );
 
 // --------------------------------------------
-// 5. API modules – adjust endpoints to your Java controllers
+// 5. API helpers
 // --------------------------------------------
+const unwrap = (response) => response?.data?.data ?? response?.data ?? null;
 
 // ----- Authentication -----
 export const authAPI = {
-  // POST /auth/login – body: { email, password }
   login: (email, password) =>
     apiClient.post('/auth/login', { email, password }),
 
-  // POST /auth/register – body: user registration object
   register: (userData) =>
     apiClient.post('/auth/register', userData),
 
-  // POST /auth/forgot-password – body: { email }
-  forgotPassword: (email) =>
-    apiClient.post('/auth/forgot-password', { email }),
+  getOtp: (email) =>
+    apiClient.post(`/auth/get-otp?email=${encodeURIComponent(email)}`),
 
-  // POST /auth/reset-password – body: { token, newPassword }
-  resetPassword: (token, newPassword) =>
-    apiClient.post('/auth/reset-password', { token, newPassword }),
+  changePassword: (payload) =>
+    apiClient.post('/auth/change-password', payload),
 
-  // POST /auth/logout – if needed
   logout: () =>
     apiClient.post('/auth/logout'),
 
-  // GET /auth/me – get current user profile
   getCurrentUser: () =>
-    apiClient.get('/auth/me'),
+    apiClient.get('/users/profile'),
 };
 
-// ----- Listings -----
-export const listingsAPI = {
-  // GET /listings?page=0&size=10&search=...&category=...
-  getAll: (params) =>
-    apiClient.get('/listings', { params }),
-
-  // GET /listings/{id}
-  getById: (id) =>
-    apiClient.get(`/listings/${id}`),
-
-  // POST /listings – body: listing object
-  create: (listingData) =>
-    apiClient.post('/listings', listingData),
-
-  // PUT /listings/{id}
-  update: (id, listingData) =>
-    apiClient.put(`/listings/${id}`, listingData),
-
-  // DELETE /listings/{id}
-  delete: (id) =>
-    apiClient.delete(`/listings/${id}`),
-
-  // PUT /listings/{id}/approve (or /listings/approve/{id} – adjust)
-  approve: (id) =>
-    apiClient.put(`/listings/${id}/approve`),
-
-  // PUT /listings/{id}/reject – body: { reason }
-  reject: (id, reason) =>
-    apiClient.put(`/listings/${id}/reject`, { reason }),
-};
-
-// ----- Categories -----
-export const categoriesAPI = {
-  // GET /categories
-  getAll: () =>
-    apiClient.get('/categories'),
-
-  // GET /categories/{id}
-  getById: (id) =>
-    apiClient.get(`/categories/${id}`),
-
-  // POST /categories
-  create: (categoryData) =>
-    apiClient.post('/categories', categoryData),
-
-  // PUT /categories/{id}
-  update: (id, categoryData) =>
-    apiClient.put(`/categories/${id}`, categoryData),
-
-  // DELETE /categories/{id}
-  delete: (id) =>
-    apiClient.delete(`/categories/${id}`),
+// ----- Orders -----
+export const ordersAPI = {
+  getMyOrders: () => apiClient.get('/orders/my-orders'),
+  getSellerOrders: () => apiClient.get('/orders/seller-orders'),
 };
 
 // ----- Users -----
 export const usersAPI = {
-  // GET /users?page=0&size=10&search=...
-  getAll: (params) =>
-    apiClient.get('/users', { params }),
+  getAll: (params) => apiClient.get('/users', { params }),
+  getById: (id) => apiClient.get(`/users/${id}`),
+  getProfile: () => apiClient.get('/users/profile'),
+  create: (userData) => apiClient.post('/users', userData),
+  update: (id, userData) => apiClient.put(`/users/${id}`, userData),
+  delete: (id) => apiClient.delete(`/users/${id}`),
+  updateRole: (id, role) => apiClient.put(`/users/${id}/role`, { role }),
+};
 
-  // GET /users/{id}
-  getById: (id) =>
-    apiClient.get(`/users/${id}`),
+// ----- Dashboard aggregate -----
+export const dashboardAPI = {
+  getStats: async () => {
+    const [profileRes, ordersRes] = await Promise.all([
+      authAPI.getCurrentUser(),
+      ordersAPI.getMyOrders(),
+    ]);
 
-  // POST /users
-  create: (userData) =>
-    apiClient.post('/users', userData),
+    const profile = unwrap(profileRes);
+    const orders = unwrap(ordersRes) || [];
+    const totalSales = orders.reduce((sum, order) => sum + Number(order.price || 0), 0);
 
-  // PUT /users/{id}
-  update: (id, userData) =>
-    apiClient.put(`/users/${id}`, userData),
+    return {
+      totalListings: 0,
+      totalSales,
+      totalOrders: orders.length,
+      profileViews: 0,
+      thisMonthGrowth: 0,
+      monthlyOrdersGrowth: 0,
+      profile,
+    };
+  },
 
-  // DELETE /users/{id}
-  delete: (id) =>
-    apiClient.delete(`/users/${id}`),
+  getRecentActivity: async () => {
+    const ordersRes = await ordersAPI.getMyOrders();
+    const orders = unwrap(ordersRes) || [];
 
-  // PUT /users/{id}/role – body: { role }
-  updateRole: (id, role) =>
-    apiClient.put(`/users/${id}/role`, { role }),
+    return orders.slice(0, 4).map((order, index) => ({
+      action: `Order ${order.productTitle || 'item'} is ${order.status || 'pending'}`,
+      time: `${index + 1} hour${index === 0 ? '' : 's'} ago`,
+    }));
+  },
+
+  getRevenueTrend: async () => {
+    const ordersRes = await ordersAPI.getMyOrders();
+    const orders = unwrap(ordersRes) || [];
+
+    return [
+      { month: 'Jan', value: 0 },
+      { month: 'Feb', value: 0 },
+      { month: 'Mar', value: 0 },
+      { month: 'Apr', value: 0 },
+      { month: 'May', value: 0 },
+      { month: 'Jun', value: orders.reduce((sum, order) => sum + Number(order.price || 0), 0) },
+    ];
+  },
+
+  getMonthlyOrders: async () => {
+    const ordersRes = await ordersAPI.getMyOrders();
+    const orders = unwrap(ordersRes) || [];
+
+    return [
+      { month: 'Jan', orders: 0 },
+      { month: 'Feb', orders: 0 },
+      { month: 'Mar', orders: 0 },
+      { month: 'Apr', orders: 0 },
+      { month: 'May', orders: 0 },
+      { month: 'Jun', orders: orders.length },
+    ];
+  },
+
+  getPendingActions: async () => {
+    const ordersRes = await ordersAPI.getMyOrders();
+    const orders = unwrap(ordersRes) || [];
+    return {
+      offers: 0,
+      ordersToShip: orders.length,
+      reviewsToRespond: 0,
+    };
+  },
+
+  getSalesHistory: async () => {
+    const ordersRes = await ordersAPI.getMyOrders();
+    const orders = unwrap(ordersRes) || [];
+
+    return orders.map((order, index) => ({
+      id: index + 1,
+      item: order.productTitle || `Order ${index + 1}`,
+      price: Number(order.price || 0),
+      date: new Date().toISOString().split('T')[0],
+      buyer: order.buyerName || 'Buyer',
+    }));
+  },
+};
+
+// ----- Listings -----
+export const listingsAPI = {
+  getAll: (params) => apiClient.get('/products', { params }),
+  getById: (id) => apiClient.get(`/products/${id}`),
+  create: (listingData) => apiClient.post('/products', listingData),
+  update: (id, listingData) => apiClient.put(`/products/${id}`, listingData),
+  delete: (id) => apiClient.delete(`/products/${id}`),
+  approve: (id) => apiClient.put(`/products/${id}/approve`),
+  reject: (id, reason) => apiClient.put(`/products/${id}/reject`, { reason }),
+};
+
+// ----- Categories -----
+export const categoriesAPI = {
+  getAll: () => apiClient.get('/categories'),
+  getById: (id) => apiClient.get(`/categories/${id}`),
+  create: (categoryData) => apiClient.post('/categories', categoryData),
+  update: (id, categoryData) => apiClient.put(`/categories/${id}`, categoryData),
+  delete: (id) => apiClient.delete(`/categories/${id}`),
 };
 
 // ----- Reports / Dashboard -----
 export const reportsAPI = {
-  // GET /reports/dashboard – get stats cards
-  getDashboardStats: () =>
-    apiClient.get('/reports/dashboard'),
-
-  // GET /reports/sales?start=...&end=...
-  getSalesReport: (params) =>
-    apiClient.get('/reports/sales', { params }),
-
-  // GET /reports/user-activity
-  getUserActivity: (params) =>
-    apiClient.get('/reports/user-activity', { params }),
-
-  // GET /reports/fraud-alerts
-  getFraudAlerts: () =>
-    apiClient.get('/reports/fraud-alerts'),
+  getDashboardStats: () => apiClient.get('/reports/dashboard'),
+  getSalesReport: (params) => apiClient.get('/reports/sales', { params }),
+  getUserActivity: (params) => apiClient.get('/reports/user-activity', { params }),
+  getFraudAlerts: () => apiClient.get('/reports/fraud-alerts'),
 };
 
 // ----- Purchase History -----
 export const purchaseAPI = {
-  // GET /purchases?page=0&size=10
-  getMyPurchases: (params) =>
-    apiClient.get('/purchases', { params }),
-
-  // GET /purchases/{id}
-  getPurchaseById: (id) =>
-    apiClient.get(`/purchases/${id}`),
-
-  // POST /purchases – body: purchase data
-  createPurchase: (purchaseData) =>
-    apiClient.post('/purchases', purchaseData),
-
-  // PUT /purchases/{id}/status – body: { status }
-  updateStatus: (id, status) =>
-    apiClient.put(`/purchases/${id}/status`, { status }),
+  getMyPurchases: (params) => apiClient.get('/purchases', { params }),
+  getPurchaseById: (id) => apiClient.get(`/purchases/${id}`),
+  createPurchase: (purchaseData) => apiClient.post('/purchases', purchaseData),
+  updateStatus: (id, status) => apiClient.put(`/purchases/${id}/status`, { status }),
 };
 
 // ----- Fraud Monitoring -----
 export const fraudAPI = {
-  // GET /fraud/alerts?page=0&size=10
-  getAllAlerts: (params) =>
-    apiClient.get('/fraud/alerts', { params }),
-
-  // PUT /fraud/alerts/{id} – body: { action }
-  resolveAlert: (id, action) =>
-    apiClient.put(`/fraud/alerts/${id}`, { action }),
-
-  // GET /fraud/stats
-  getFraudStats: () =>
-    apiClient.get('/fraud/stats'),
+  getAllAlerts: (params) => apiClient.get('/fraud/alerts', { params }),
+  resolveAlert: (id, action) => apiClient.put(`/fraud/alerts/${id}`, { action }),
+  getFraudStats: () => apiClient.get('/fraud/stats'),
 };
 
 // --------------------------------------------
@@ -232,6 +242,8 @@ export const fraudAPI = {
 // --------------------------------------------
 export default {
   auth: authAPI,
+  orders: ordersAPI,
+  dashboard: dashboardAPI,
   listings: listingsAPI,
   categories: categoriesAPI,
   users: usersAPI,

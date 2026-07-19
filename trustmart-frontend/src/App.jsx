@@ -4,7 +4,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
-import Dashboard from "./pages/Dashboard";
+import UserDashboard from "./pages/user/UserDashboard";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -30,7 +30,7 @@ const App = () => {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <UserDashboard />
           </ProtectedRoute>
         }
       />

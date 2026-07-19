@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react"; // added Building
+import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
   // State to switch between Login and Register form
@@ -23,6 +24,7 @@ export default function LoginPage() {
 
   // Navigate function - redirect to different pages
   const navigate = useNavigate();
+  const { login, register } = useAuth();
 
   // useEffect - read email from localStorage when page loads
   useEffect(() => {
@@ -86,21 +88,43 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
-        // Register success - show alert
+        await register({
+          name,
+          address,
+          email,
+          password,
+        });
+
         alert("Account created successfully!");
-        // Reset form and switch to login mode
         setIsRegister(false);
-        setName("");          // changed from setFullName
+        setName("");
+        setAddress("");
         setPassword("");
         setConfirmPassword("");
       } else {
-        // Login success - navigate to dashboard
+        const response = await login(email, password);
+
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+
+        const loggedUser = response?.user || response?.data?.user || response?.data?.data?.user;
+        const roles = loggedUser?.roles || [];
+        const isAdmin = roles.some((role) => role === "ADMIN" || role === "ROLE_ADMIN" || role?.name === "ADMIN");
+
+        if (isAdmin) {
+          navigate("/admin/dashboard");
+          return;
+        }
+
         navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
     } finally {
-      setLoading(false); //  stop loading in any case
+      setLoading(false);
     }
   };
 
