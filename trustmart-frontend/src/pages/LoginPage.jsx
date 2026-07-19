@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react";
+<<<<<<< HEAD
+import { useAuth } from "../context/AuthContext";
+=======
 import { authAPI } from "../utils/api";
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
 
 export default function LoginPage() {
   // State to switch between Login and Register form
@@ -24,6 +28,7 @@ export default function LoginPage() {
 
   // Navigate function - redirect to different pages
   const navigate = useNavigate();
+  const { login, register } = useAuth();
 
   // useEffect - read email from localStorage when page loads
   useEffect(() => {
@@ -87,7 +92,11 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
+<<<<<<< HEAD
+        await register({
+=======
         await authAPI.register({
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
           name,
           address,
           email,
@@ -101,6 +110,9 @@ export default function LoginPage() {
         setPassword("");
         setConfirmPassword("");
       } else {
+<<<<<<< HEAD
+        const response = await login(email, password);
+=======
         const response = await authAPI.login(email, password);
         const authData = response?.data?.data;
         const tokenData = authData?.tokenResponse;
@@ -122,6 +134,7 @@ export default function LoginPage() {
             roles: authData?.role ? [authData.role] : ["ROLE_USER"],
           })
         );
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
 
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", email);
@@ -129,13 +142,29 @@ export default function LoginPage() {
           localStorage.removeItem("rememberedEmail");
         }
 
+<<<<<<< HEAD
+        const loggedUser = response?.user || response?.data?.user || response?.data?.data?.user;
+        const roles = loggedUser?.roles || [];
+        const isAdmin = roles.some((role) => role === "ADMIN" || role === "ROLE_ADMIN" || role?.name === "ADMIN");
+
+        if (isAdmin) {
+          navigate("/admin/dashboard");
+          return;
+        }
+
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setError(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+=======
         navigate("/dashboard");
       }
     } catch (err) {
       const serverMessage = err?.response?.data?.message;
       setError(serverMessage || err.message || "Something went wrong. Please try again.");
+>>>>>>> 7b2c709c8ec9f9cb4f2714dad2e9143386fa6684
     } finally {
-      setLoading(false); //  stop loading in any case
+      setLoading(false);
     }
   };
 

@@ -1,8 +1,26 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../utils/api';
 
 const AuthContext = createContext(null);
+const normalizeUser = (userData) => {
+  if (!userData) return null;
+
+  const roleValue = userData.role ?? userData.roles ?? [];
+  const roles = Array.isArray(roleValue)
+    ? roleValue
+    : roleValue
+      ? [roleValue]
+      : [];
+
+  return {
+    ...userData,
+    roles: roles.map((role) => {
+      if (typeof role === 'string') return role;
+      if (role?.name) return role.name;
+      return role;
+    }),
+  };
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -13,14 +31,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      // Optionally fetch user data
       authAPI
         .getCurrentUser()
         .then((response) => {
-          setUser(response.data);
+          const profile = response?.data?.data ?? response?.data ?? response;
+          setUser(normalizeUser(profile));
         })
         .catch(() => {
-          // Token invalid – clear storage
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           setUser(null);
@@ -35,13 +52,18 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authAPI.login(email, password);
-      const { accessToken, refreshToken, user } = response.data;
-      localStorage.setItem('accessToken', accessToken);
+      const payload = response?.data?.data ?? response?.data ?? response;
+      const accessToken = payload?.tokenResponse?.accessToken || payload?.accessToken;
+      const refreshToken = payload?.tokenResponse?.refreshToken || payload?.refreshToken;
+
+      if (accessToken) localStorage.setItem('accessToken', accessToken);
       if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
-      setUser(user);
-      return response.data;
+
+      const normalizedUser = normalizeUser(payload);
+      setUser(normalizedUser);
+      return payload;
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err?.response?.data?.message || err.message || 'Login failed');
       throw err;
     }
   };
@@ -62,9 +84,9 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authAPI.register(userData);
-      return response.data;
+      return response?.data?.data ?? response?.data ?? response;
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(err?.response?.data?.message || err.message || 'Registration failed');
       throw err;
     }
   };
