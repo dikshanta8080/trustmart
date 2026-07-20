@@ -8,9 +8,40 @@ export default function ChangePasswordPage() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (!currentPassword) {
+      setError('Please enter your current password.');
+      return;
+    }
+    if (!newPassword) {
+      setError('Please enter a new password.');
+      return;
+    }
+    if (newPassword.length < 4) {
+      setError('New password must be at least 4 characters long.');
+      return;
+    }
+    if (newPassword === currentPassword) {
+      setError('New password cannot be the same as your current password.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    // API call पछि थपिनेछ
+    setSuccess('Password changed successfully! (mock)');
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
   };
 
   return (
@@ -19,6 +50,20 @@ export default function ChangePasswordPage() {
         <h1 className="text-2xl font-bold text-gray-900">Change Password</h1>
         <p className="text-gray-500 text-sm mt-1">Ensure your account is using a long, random password to stay secure</p>
       </div>
+
+      {success && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
+          <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+          <p className="text-sm text-green-800">{success}</p>
+        </div>
+      )}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+          <p className="text-sm text-red-800">{error}</p>
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
