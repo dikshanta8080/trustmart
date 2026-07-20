@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { userAPI } from '../../utils/api';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, KeyRound } from 'lucide-react';
 
 export default function ChangePasswordPage() {
@@ -8,10 +9,11 @@ export default function ChangePasswordPage() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -37,11 +39,22 @@ export default function ChangePasswordPage() {
       return;
     }
 
-    // API call पछि थपिनेछ
-    setSuccess('Password changed successfully! (mock)');
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+    try {
+      setLoading(true);
+      await userAPI.changePassword({
+        currentPassword,
+        newPassword
+      });
+      setSuccess('Your password has been changed successfully!');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Failed to change password. Please verify current password.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -127,9 +140,22 @@ export default function ChangePasswordPage() {
             </div>
           </div>
           <div className="pt-4 flex justify-end">
-            <button type="submit" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition shadow-sm cursor-pointer">
-              <KeyRound className="w-4 h-4" />
-              Change Password
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition shadow-sm disabled:opacity-75 cursor-pointer"
+            >
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Changing Password...
+                </>
+              ) : (
+                <>
+                  <KeyRound className="w-4 h-4" />
+                  Change Password
+                </>
+              )}
             </button>
           </div>
         </form>
