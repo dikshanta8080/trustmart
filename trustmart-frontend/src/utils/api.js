@@ -258,3 +258,11 @@ export default {
   purchases: purchaseAPI,
   fraud: fraudAPI,
 };
+
+// --------------------------------------------
+// 7. FIX: Export userAPI to match the import in ChangePasswordPage
+// --------------------------------------------
+export const userAPI = {
+  changePassword: authAPI.changePassword,
+  // If you need other user methods, add them here
+};
