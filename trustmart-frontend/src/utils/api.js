@@ -1,13 +1,10 @@
 import axios from 'axios';
 
-// --------------------------------------------
 // 1. Base URL – use the backend context path
-// --------------------------------------------
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
-// --------------------------------------------
+
 // 2. Axios instance
-// --------------------------------------------
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -16,9 +13,8 @@ const apiClient = axios.create({
   timeout: 15000,
 });
 
-// --------------------------------------------
+
 // 3. Request interceptor – add JWT token
-// --------------------------------------------
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
@@ -30,9 +26,8 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// --------------------------------------------
+
 // 4. Response interceptor – token refresh (optional)
-// --------------------------------------------
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -66,12 +61,11 @@ apiClient.interceptors.response.use(
   }
 );
 
-// --------------------------------------------
+
 // 5. API helpers
-// --------------------------------------------
 const unwrap = (response) => response?.data?.data ?? response?.data ?? null;
 
-// ----- Authentication -----
+//  Authentication 
 export const authAPI = {
   login: (email, password) =>
     apiClient.post('/auth/login', { email, password }),
@@ -93,7 +87,7 @@ export const authAPI = {
 
 };
 
-// ----- Dashboard / User Home -----
+//  Dashboard / User Home 
 const unwrapApiData = (payload) => {
   if (payload?.data?.data !== undefined) return payload.data.data;
   if (payload?.data !== undefined) return payload.data;
@@ -116,7 +110,7 @@ export const ordersAPI = {
   cancel: (id) => apiClient.delete(`/orders/${id}`),
 };
 
-// ----- Dashboard aggregate -----
+//  Dashboard aggregate 
 export const dashboardAPI = {
   getStats: async () => {
     const [profileRes, ordersRes] = await Promise.all([
@@ -201,7 +195,7 @@ export const dashboardAPI = {
   },
 };
 
-// ----- Listings -----
+// Listings 
 export const listingsAPI = {
   getAll: (params) => apiClient.get('/products', { params }),
   getById: (id) => apiClient.get(`/products/${id}`),
@@ -212,7 +206,7 @@ export const listingsAPI = {
   reject: (id, reason) => apiClient.put(`/products/${id}/reject`, { reason }),
 };
 
-// ----- Categories -----
+// Categories
 export const categoriesAPI = {
   getAll: () => apiClient.get('/categories'),
   getById: (id) => apiClient.get(`/categories/${id}`),
@@ -221,7 +215,7 @@ export const categoriesAPI = {
   delete: (id) => apiClient.delete(`/categories/${id}`),
 };
 
-// ----- Reports / Dashboard -----
+// Reports / Dashboard
 export const reportsAPI = {
   getDashboardStats: () => apiClient.get('/reports/dashboard'),
   getSalesReport: (params) => apiClient.get('/reports/sales', { params }),
@@ -229,7 +223,7 @@ export const reportsAPI = {
   getFraudAlerts: () => apiClient.get('/reports/fraud-alerts'),
 };
 
-// ----- Purchase History -----
+//  Purchase History
 export const purchaseAPI = {
   getMyPurchases: (params) => apiClient.get('/purchases', { params }),
   getPurchaseById: (id) => apiClient.get(`/purchases/${id}`),
@@ -237,16 +231,14 @@ export const purchaseAPI = {
   updateStatus: (id, status) => apiClient.put(`/purchases/${id}/status`, { status }),
 };
 
-// ----- Fraud Monitoring -----
+// Fraud Monitoring 
 export const fraudAPI = {
   getAllAlerts: (params) => apiClient.get('/fraud/alerts', { params }),
   resolveAlert: (id, action) => apiClient.put(`/fraud/alerts/${id}`, { action }),
   getFraudStats: () => apiClient.get('/fraud/stats'),
 };
 
-// --------------------------------------------
 // 6. Default export (optional)
-// --------------------------------------------
 export default {
   auth: authAPI,
   orders: ordersAPI,
@@ -259,9 +251,8 @@ export default {
   fraud: fraudAPI,
 };
 
-// --------------------------------------------
+
 // 7. FIX: Export userAPI to match the import in ChangePasswordPage
-// --------------------------------------------
 export const userAPI = {
   changePassword: authAPI.changePassword,
   // If you need other user methods, add them here
