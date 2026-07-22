@@ -2,48 +2,45 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Shield, Mail, Lock, Eye, EyeOff, User, Building } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { authAPI } from "../utils/api";
 
 export default function LoginPage() {
   // State to switch between Login and Register form
   const [isRegister, setIsRegister] = useState(false);
-  
+
   // State to show/hide password
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
-  
-  const [name, setName] = useState("");        
-  const [address, setAddress] = useState("");  
-  const [email, setEmail] = useState("");      
-  const [password, setPassword] = useState(""); 
+
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
-  
-  //  ADDED: loading state for submit button
+
+  // Loading state for submit button
   const [loading, setLoading] = useState(false);
 
-  // Navigate function - redirect to different pages
   const navigate = useNavigate();
   const { login, register } = useAuth();
 
-  // useEffect - read email from localStorage when page loads
+  // Read saved email from localStorage when page loads
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setEmail(savedEmail);
-      setRememberMe(true);  
+      setRememberMe(true);
     }
   }, []);
 
-  // Form submit handler function
+  // Form submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
-    setLoading(true); //  start loading
+    setLoading(true);
 
-    // Validation
+    // ---- Validation ----
     if (isRegister) {
       if (!name.trim()) {
         setError("Please enter your full name");
@@ -87,6 +84,7 @@ export default function LoginPage() {
       return;
     }
 
+    // ---- API calls ----
     try {
       if (isRegister) {
         await register({
@@ -95,7 +93,6 @@ export default function LoginPage() {
           email,
           password,
         });
-
         alert("Account created successfully!");
         setIsRegister(false);
         setName("");
@@ -111,22 +108,40 @@ export default function LoginPage() {
           localStorage.removeItem("rememberedEmail");
         }
 
-        const loggedUser = response?.user || response?.data?.user || response?.data?.data?.user;
+        const loggedUser =
+          response?.user || response?.data?.user || response?.data?.data?.user;
         const roles = loggedUser?.roles || [];
-        const isAdmin = roles.some((role) => role === "ADMIN" || role === "ROLE_ADMIN" || role?.name === "ADMIN");
+        const isAdmin = roles.some(
+          (role) =>
+            role === "ADMIN" || role === "ROLE_ADMIN" || role?.name === "ADMIN"
+        );
 
         if (isAdmin) {
           navigate("/admin/dashboard");
           return;
         }
-
         navigate("/dashboard");
       }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+      setError(
+        err?.response?.data?.message ||
+          err.message ||
+          "Something went wrong. Please try again."
+      );
     } finally {
       setLoading(false);
     }
+  };
+
+  // ---- Social Login Handler ----
+  // Redirects to the OAuth2 authorization endpoint of the chosen provider.
+  // Adjust the base path if your backend uses a different route
+  // (e.g., "/api/oauth2/authorization/..." or "/auth/...").
+  const handleSocialLogin = (provider) => {
+    // Spring Security default endpoint
+    window.location.href = `/oauth2/authorization/${provider}`;
+    // Alternative: open in a new tab/window:
+    // window.open(`/oauth2/authorization/${provider}`, "_blank");
   };
 
   return (
@@ -140,7 +155,9 @@ export default function LoginPage() {
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Trustmart</h1>
             <p className="text-gray-500 text-sm mt-1">
-              {isRegister ? "Create your account" : "Sign in to continue buying and selling"}
+              {isRegister
+                ? "Create your account"
+                : "Sign in to continue buying and selling"}
             </p>
           </div>
 
@@ -151,7 +168,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Form - main form for login/register */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Full Name - Register only */}
             {isRegister && (
@@ -239,7 +256,11 @@ export default function LoginPage() {
                   onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                 >
-                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPass ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -267,7 +288,11 @@ export default function LoginPage() {
                     onClick={() => setShowConfirmPass(!showConfirmPass)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                   >
-                    {showConfirmPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showConfirmPass ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -285,7 +310,10 @@ export default function LoginPage() {
                   />
                   <span className="text-sm text-gray-600">Remember me</span>
                 </label>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline font-medium">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-blue-600 hover:underline font-medium"
+                >
                   Forgot Password?
                 </Link>
               </div>
@@ -302,8 +330,10 @@ export default function LoginPage() {
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   {isRegister ? "Creating Account..." : "Signing In..."}
                 </div>
+              ) : isRegister ? (
+                "Create Account"
               ) : (
-                isRegister ? "Create Account" : "Sign In"
+                "Sign In"
               )}
             </button>
           </form>
@@ -315,13 +345,19 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-gray-300"></div>
           </div>
 
-          {/* Social Login */}
+          {/* Social Login Buttons */}
           <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition">
+            <button
+              onClick={() => handleSocialLogin("google")}
+              className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition"
+            >
               <span className="text-red-500 font-bold text-lg">G</span>
               Google
             </button>
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition">
+            <button
+              onClick={() => handleSocialLogin("facebook")}
+              className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition"
+            >
               <span className="text-blue-600 font-bold text-lg">f</span>
               Facebook
             </button>
@@ -329,7 +365,9 @@ export default function LoginPage() {
 
           {/* Toggle Login/Register */}
           <p className="text-center text-sm text-gray-500 mt-6">
-            {isRegister ? "Already have an account? " : "Don't have an account? "}
+            {isRegister
+              ? "Already have an account? "
+              : "Don't have an account? "}
             <button
               type="button"
               onClick={() => {
