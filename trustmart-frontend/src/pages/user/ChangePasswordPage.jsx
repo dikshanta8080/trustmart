@@ -2,22 +2,37 @@ import React, { useState } from 'react';
 import { userAPI } from '../../utils/api';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, KeyRound } from 'lucide-react';
 
+/**
+ * ChangePasswordPage component
+ * Allows authenticated users to update their account password.
+ * Provides form validation, error handling, and success feedback.
+ */
 export default function ChangePasswordPage() {
+  //  State for form fields 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Toggle password visibility 
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  //  UI state 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  /**
+   * Handles form submission.
+   * Validates inputs, calls API, and updates UI accordingly.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
+    // --- Frontend validation ---
     if (!currentPassword) {
       setError('Please enter your current password.');
       return;
@@ -41,10 +56,14 @@ export default function ChangePasswordPage() {
 
     try {
       setLoading(true);
+
+      // --- API call to change password ---
       await userAPI.changePassword({
         currentPassword,
         newPassword
       });
+
+      // --- Success: clear form and show message ---
       setSuccess('Your password has been changed successfully!');
       setCurrentPassword('');
       setNewPassword('');
@@ -59,17 +78,23 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="max-w-md mx-auto space-y-6">
+      {/* Page header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Change Password</h1>
-        <p className="text-gray-500 text-sm mt-1">Ensure your account is using a long, random password to stay secure</p>
+        <p className="text-gray-500 text-sm mt-1">
+          Ensure your account is using a long, random password to stay secure
+        </p>
       </div>
 
+      {/* Success message */}
       {success && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
           <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
           <p className="text-sm text-green-800">{success}</p>
         </div>
       )}
+
+      {/* Error message */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -77,10 +102,14 @@ export default function ChangePasswordPage() {
         </div>
       )}
 
+      {/* Form card */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Current Password */}
           <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Current Password</label>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+              Current Password
+            </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -99,8 +128,12 @@ export default function ChangePasswordPage() {
               </button>
             </div>
           </div>
+
+          {/* New Password */}
           <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">New Password</label>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+              New Password
+            </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -119,8 +152,12 @@ export default function ChangePasswordPage() {
               </button>
             </div>
           </div>
+
+          {/* Confirm New Password */}
           <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+              Confirm New Password
+            </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -139,6 +176,8 @@ export default function ChangePasswordPage() {
               </button>
             </div>
           </div>
+
+          {/* Submit button */}
           <div className="pt-4 flex justify-end">
             <button
               type="submit"
